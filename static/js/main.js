@@ -1,17 +1,13 @@
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   ALGO WARS — main.js
-   Retro Arcade CPU Scheduling Simulator
-   Live Simulation · Algorithm Battle · 8-Bit Vibes
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 
-/* ── Process colors palette (neon retro) ───────── */
+
+//Process colors palette 
 const COLORS = [
     '#00ff64', '#ff2d95', '#00e5ff', '#ffe600', '#ff8c00',
     '#b64dff', '#ff3333', '#2dd4bf', '#e879f9', '#38bdf8',
     '#facc15', '#4ade80', '#f97316', '#818cf8', '#a855f7',
 ];
 
-/* ── Fun fake process names ────────────────────── */
+// Fun fake process names
 const PROCESS_NAMES = [
     'chrome.exe', 'discord.exe', 'spotify.exe', 'vscode.exe',
     'steam.exe', 'explorer.exe', 'node.js', 'python.exe',
@@ -21,7 +17,7 @@ const PROCESS_NAMES = [
     'npm.exe', 'java.exe', 'mysql.exe', 'redis.exe',
 ];
 
-/* ── Algorithm descriptions ────────────────────── */
+// Algorithm descriptions
 const ALGO_INFO = {
     fcfs: {
         name: 'FCFS – First Come First Serve',
@@ -58,13 +54,13 @@ const ALGO_SHORT = {
     round_robin: 'Round Robin',
 };
 
-/* ── State ──────────────────────────────────────── */
+//State
 let processes = [];
 let pidCounter = 1;
 let currentMode = 'single'; // 'single' | 'battle'
 let liveSimTimer = null;
 
-/* ── DOM refs ───────────────────────────────────── */
+//DOM refs
 const $ = (id) => document.getElementById(id);
 
 const algoSelect = $('algoSelect');
@@ -101,7 +97,7 @@ const battleSection = $('battleSection');
 const battleWinner = $('battleWinner');
 
 
-/* ── Helpers ─────────────────────────────────────── */
+// Helpers
 function isPriority() {
     if (currentMode === 'battle') {
         return $('battleAlgo1').value.includes('priority') ||
@@ -129,7 +125,7 @@ function getRandomName() {
     return PROCESS_NAMES[Math.floor(Math.random() * PROCESS_NAMES.length)];
 }
 
-/* ── 8-bit SFX (Web Audio API blips) ───────────── */
+// themed AUDIO
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let audioCtx = null;
 
@@ -154,7 +150,7 @@ function playClearSound() { playBlip(200, 0.12, 'sawtooth'); }
 function playSimStart() { playBlip(880, 0.1); setTimeout(() => playBlip(1100, 0.1), 120); }
 function playWinSound() { playBlip(660, 0.1); setTimeout(() => playBlip(880, 0.1), 120); setTimeout(() => playBlip(1100, 0.15), 240); }
 
-/* ── Mode Toggle ────────────────────────────────── */
+// Mode Toggle
 function setMode(mode) {
     currentMode = mode;
     modeSingle.classList.toggle('active', mode === 'single');
@@ -179,7 +175,7 @@ function setMode(mode) {
 modeSingle.addEventListener('click', () => setMode('single'));
 modeBattle.addEventListener('click', () => setMode('battle'));
 
-/* ── Algorithm selector change ──────────────────── */
+// Algorithm selector change
 function updateAlgoUI() {
     const key = currentMode === 'battle' ? $('battleAlgo1').value : algoSelect.value;
     const info = ALGO_INFO[key];
@@ -196,12 +192,12 @@ $('battleAlgo1').addEventListener('change', updateAlgoUI);
 $('battleAlgo2').addEventListener('change', updateAlgoUI);
 updateAlgoUI();
 
-/* ── Speed slider ───────────────────────────────── */
+// Speed slider above GANNT chart
 speedSlider.addEventListener('input', () => {
     speedLabel.textContent = speedSlider.value + 'x';
 });
 
-/* ── Add process ────────────────────────────────── */
+// Add process
 function addProcess(at, bt, priority) {
     const pid = 'P' + pidCounter++;
     const color = COLORS[(processes.length) % COLORS.length];
@@ -224,14 +220,14 @@ btnAdd.addEventListener('click', () => {
     inputBT.focus();
 });
 
-/* ── Enter key support ──────────────────────────── */
+// Enter key 
 [inputAT, inputBT, inputPriority].forEach(el => {
     el.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') btnAdd.click();
     });
 });
 
-/* ── Random processes ───────────────────────────── */
+// Random processes
 btnRandom.addEventListener('click', () => {
     processes = [];
     pidCounter = 1;
@@ -245,7 +241,7 @@ btnRandom.addEventListener('click', () => {
     showToast(`${count} RANDOM PROCESSES SPAWNED!`, 'success');
 });
 
-/* ── Clear ──────────────────────────────────────── */
+// Clear
 btnClear.addEventListener('click', () => {
     if (liveSimTimer) { clearInterval(liveSimTimer); liveSimTimer = null; }
     processes = [];
@@ -261,7 +257,7 @@ btnClear.addEventListener('click', () => {
     showToast('ALL PROCESSES TERMINATED', 'error');
 });
 
-/* ── Render process chips ───────────────────────── */
+// Render process chips
 function renderChips() {
     procCount.textContent = processes.length;
     processChips.innerHTML = '';
@@ -291,7 +287,7 @@ function renderChips() {
     });
 }
 
-/* ── Simulate ───────────────────────────────────── */
+// Simulate
 btnSimulate.addEventListener('click', async () => {
     if (processes.length === 0) return showToast('LOAD AT LEAST ONE PROCESS!', 'error');
 
@@ -304,9 +300,7 @@ btnSimulate.addEventListener('click', async () => {
     }
 });
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   SINGLE MODE — Live Step-by-Step Simulation
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+// SINGLE MODE Simulation
 async function runSingle() {
     btnSimulate.disabled = true;
     btnSimulate.innerHTML = '<span class="btn-icon">⏳</span> RUNNING…';
@@ -344,7 +338,7 @@ async function runSingle() {
     }
 }
 
-/* ── Live Gantt Rendering (step-by-step animation) ─ */
+// Live Gantt Rendering
 function liveRenderGantt(timeline) {
     return new Promise((resolve) => {
         ganttSection.style.display = 'block';
@@ -441,7 +435,7 @@ function renderTimestamps(timeline, totalTime) {
     });
 }
 
-/* ── Render results table + metrics ─────────────── */
+// Render results table + metrics
 function renderResults(results, data) {
     resultsSection.style.display = 'block';
     resultsBody.innerHTML = '';
@@ -479,9 +473,7 @@ function renderResults(results, data) {
 }
 
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   BATTLE MODE — Side-by-Side Algorithm Comparison
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+// BATTLE MODE Comparison
 async function runBattle() {
     const algo1 = $('battleAlgo1').value;
     const algo2 = $('battleAlgo2').value;

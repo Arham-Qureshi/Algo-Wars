@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template, request, jsonify
 import scheduler
 
@@ -34,11 +33,11 @@ def simulate():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
-
+"""Run two algorithms on the same process set (for battle)"""
 @app.route('/api/compare', methods=['POST'])
 def compare():
-    """Run two algorithms on the same process set and return both results."""
-    data = request.get_json()
+    """gets the empty JSON and returns it by filling the processed data"""
+    data = request.get_json() 
     algo1 = data.get('algorithm1', 'fcfs')
     algo2 = data.get('algorithm2', 'sjf_non_preemptive')
     quantum = int(data.get('quantum', 2))

@@ -125,14 +125,14 @@ Each process in the ready queue is assigned a fixed time slice, known as the tim
 
 ## Technology Stack
 
-| Layer | Technology |
-|---|---|
-| Backend Framework | Python 3, Flask |
-| Scheduling Logic | Pure Python (scheduler.py) |
-| Frontend | Vanilla JavaScript (ES6+), HTML5, CSS3 |
-| Sound Effects | Web Audio API (Oscillator-based) |
-| Data Transport | JSON (REST API via `fetch`) |
-| Server | Flask development server (port 5000) |
+| Layer             | Technology                             |
+| ----------------- | -------------------------------------- |
+| Backend Framework | Python 3, Flask                        |
+| Scheduling Logic  | Pure Python (scheduler.py)             |
+| Frontend          | Vanilla JavaScript (ES6+), HTML5, CSS3 |
+| Sound Effects     | Web Audio API (Oscillator-based)       |
+| Data Transport    | JSON (REST API via `fetch`)          |
+| Server            | Flask development server              |
 
 ---
 
@@ -176,12 +176,14 @@ cd Algo-Wars
 **Step 2: (Optional but recommended) Create a virtual environment**
 
 On Windows:
+
 ```bash
 python -m venv venv
 venv\Scripts\activate
 ```
 
 On macOS / Linux:
+
 ```bash
 python3 -m venv venv
 source venv/bin/activate
@@ -243,11 +245,11 @@ Battle Mode submits the same process set to two different algorithms simultaneou
 
 ### Process Input Parameters
 
-| Parameter | Field | Description | Minimum Value |
-|---|---|---|---|
-| Arrival Time | AT | The time unit at which the process enters the ready queue. | 0 |
-| Burst Time | BT | The total CPU time required to complete the process. | 1 |
-| Priority | PR | The scheduling priority of the process (lower number = higher priority). Required for Priority algorithms only. | 0 |
+| Parameter    | Field | Description                                                                                                     | Minimum Value |
+| ------------ | ----- | --------------------------------------------------------------------------------------------------------------- | ------------- |
+| Arrival Time | AT    | The time unit at which the process enters the ready queue.                                                      | 0             |
+| Burst Time   | BT    | The total CPU time required to complete the process.                                                            | 1             |
+| Priority     | PR    | The scheduling priority of the process (lower number = higher priority). Required for Priority algorithms only. | 0             |
 
 Processes can also be added using the **RANDOM** button, which generates 3 to 6 processes with randomized arrival times (0 to 7), burst times (1 to 8), and priority values (1 to 5).
 
@@ -267,24 +269,24 @@ The **Speed** slider in the control bar adjusts the animation speed of the Gantt
 
 After simulation, the results table displays one row per process with the following columns:
 
-| Column | Abbreviation | Description |
-|---|---|---|
-| Process ID | PID | Unique identifier assigned to the process. |
-| Arrival Time | AT | The time the process entered the system. |
-| Burst Time | BT | The total CPU time consumed by the process. |
-| Completion Time | CT | The time at which the process finished execution. |
-| Turnaround Time | TAT | CT minus AT. Total time from arrival to completion. |
-| Waiting Time | WT | TAT minus BT. Total time spent waiting in the ready queue. |
+| Column          | Abbreviation | Description                                                |
+| --------------- | ------------ | ---------------------------------------------------------- |
+| Process ID      | PID          | Unique identifier assigned to the process.                 |
+| Arrival Time    | AT           | The time the process entered the system.                   |
+| Burst Time      | BT           | The total CPU time consumed by the process.                |
+| Completion Time | CT           | The time at which the process finished execution.          |
+| Turnaround Time | TAT          | CT minus AT. Total time from arrival to completion.        |
+| Waiting Time    | WT           | TAT minus BT. Total time spent waiting in the ready queue. |
 
 **Performance Metric Cards**
 
-| Metric | Description |
-|---|---|
-| Avg Waiting Time | Mean waiting time across all processes. Lower is better. |
-| Avg Turnaround | Mean turnaround time across all processes. Lower is better. |
-| Avg Completion | Mean completion time across all processes. |
-| Throughput | Number of processes completed per unit of total time. Higher is better. |
-| CPU Utilization | Percentage of total time the CPU was actively executing (not idle). Higher is better. |
+| Metric           | Description                                                                           |
+| ---------------- | ------------------------------------------------------------------------------------- |
+| Avg Waiting Time | Mean waiting time across all processes. Lower is better.                              |
+| Avg Turnaround   | Mean turnaround time across all processes. Lower is better.                           |
+| Avg Completion   | Mean completion time across all processes.                                            |
+| Throughput       | Number of processes completed per unit of total time. Higher is better.               |
+| CPU Utilization  | Percentage of total time the CPU was actively executing (not idle). Higher is better. |
 
 **Battle Mode Scoring**
 
@@ -320,15 +322,15 @@ Runs a single scheduling algorithm on the provided process set.
 }
 ```
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| algorithm | string | Yes | Algorithm key. One of: `fcfs`, `sjf_non_preemptive`, `srtf`, `priority_non_preemptive`, `priority_preemptive`, `round_robin`. |
-| quantum | integer | No | Time quantum for Round Robin. Defaults to 2. |
-| processes | array | Yes | List of process objects. |
-| processes[].pid | string | Yes | Process identifier. |
-| processes[].at | integer | Yes | Arrival time. |
-| processes[].bt | integer | Yes | Burst time. |
-| processes[].priority | integer | Conditional | Required for priority-based algorithms. |
+| Field                | Type    | Required    | Description                                                                                                                              |
+| -------------------- | ------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| algorithm            | string  | Yes         | Algorithm key. One of:`fcfs`, `sjf_non_preemptive`, `srtf`, `priority_non_preemptive`, `priority_preemptive`, `round_robin`. |
+| quantum              | integer | No          | Time quantum for Round Robin. Defaults to 2.                                                                                             |
+| processes            | array   | Yes         | List of process objects.                                                                                                                 |
+| processes[].pid      | string  | Yes         | Process identifier.                                                                                                                      |
+| processes[].at       | integer | Yes         | Arrival time.                                                                                                                            |
+| processes[].bt       | integer | Yes         | Burst time.                                                                                                                              |
+| processes[].priority | integer | Conditional | Required for priority-based algorithms.                                                                                                  |
 
 **Response Body**
 
@@ -398,13 +400,13 @@ Each nested result object follows the identical schema as the response from `/ap
 
 The following formulas are used to compute per-process metrics:
 
-| Metric | Formula |
-|---|---|
-| Completion Time (CT) | The clock time at which the process finishes execution. |
-| Turnaround Time (TAT) | TAT = CT - Arrival Time |
-| Waiting Time (WT) | WT = TAT - Burst Time |
-| Throughput | n / (max CT - min AT), where n is the number of processes. |
-| CPU Utilization | ((Total Time - Idle Time) / Total Time) x 100 |
+| Metric                | Formula                                                    |
+| --------------------- | ---------------------------------------------------------- |
+| Completion Time (CT)  | The clock time at which the process finishes execution.    |
+| Turnaround Time (TAT) | TAT = CT - Arrival Time                                    |
+| Waiting Time (WT)     | WT = TAT - Burst Time                                      |
+| Throughput            | n / (max CT - min AT), where n is the number of processes. |
+| CPU Utilization       | ((Total Time - Idle Time) / Total Time) x 100              |
 
 **Total Time** is defined as the span from the earliest arrival time to the latest completion time across all processes.
 

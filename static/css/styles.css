@@ -1,11 +1,6 @@
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   ALGO WARS — Retro Arcade / 8-Bit Theme
-   CRT scanlines · pixel fonts · neon glow
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap');
 
-/* ── Tokens ─────────────────────────────────────── */
+/* Tokens */
 :root {
     --bg-deep: #0a0a0c;
     --bg-body: #0e0e12;
@@ -35,7 +30,7 @@
     --pixel-border: 3px solid var(--neon-green);
 }
 
-/* ── Reset ──────────────────────────────────────── */
+/* Reset */
 *,
 *::before,
 *::after {
@@ -58,7 +53,7 @@ body {
     position: relative;
 }
 
-/* ── CRT Scanline Overlay ──────────────────────── */
+/* CRT Scanline Overlay */
 body::after {
     content: '';
     position: fixed;
@@ -72,7 +67,7 @@ body::after {
     z-index: 9999;
 }
 
-/* ── CRT Flicker ───────────────────────────────── */
+/* CRT Flicker */
 body::before {
     content: '';
     position: fixed;
@@ -99,7 +94,7 @@ body::before {
     }
 }
 
-/* ── Header ─────────────────────────────────────── */
+/* Header */
 .app-header {
     position: relative;
     text-align: center;
@@ -168,7 +163,7 @@ body::before {
     letter-spacing: 2px;
 }
 
-/* ── Mode Toggle Bar ───────────────────────────── */
+/* Mode Bar */
 .mode-bar {
     display: flex;
     justify-content: center;
@@ -214,7 +209,7 @@ body::before {
     background: rgba(0, 255, 100, 0.12);
 }
 
-/* ── Panel / Pixel Card ────────────────────────── */
+/* Pixel Card */
 .pixel-card {
     background: var(--bg-panel);
     border: 2px solid rgba(0, 255, 100, 0.2);
@@ -265,7 +260,7 @@ body::before {
     margin-bottom: 0;
 }
 
-/* ── Main Grid ──────────────────────────────────── */
+/* Main Grid */
 .main-grid {
     display: grid;
     grid-template-columns: 1fr 1.5fr;
@@ -277,7 +272,7 @@ body::before {
     position: relative;
 }
 
-/* ── Select ─────────────────────────────────────── */
+/* Select */
 .select-wrap select {
     width: 100%;
     padding: 10px 14px;
@@ -307,7 +302,7 @@ body::before {
     color: var(--neon-green);
 }
 
-/* ── Info Tooltip ───────────────────────────────── */
+/* Info Tooltip */
 .info-tooltip-wrap {
     position: relative;
     display: inline-flex;
@@ -368,7 +363,7 @@ body::before {
     pointer-events: auto;
 }
 
-/* ── Quantum ────────────────────────────────────── */
+/* Quantum */
 .quantum-wrap {
     margin-top: 12px;
     display: flex;
@@ -400,7 +395,7 @@ body::before {
     box-shadow: 0 0 8px rgba(0, 255, 100, 0.2);
 }
 
-/* ── Priority Note ──────────────────────────────── */
+/* Priority Note */
 .priority-note {
     margin-top: 8px;
     font-size: 0.7rem;
@@ -408,7 +403,7 @@ body::before {
     text-shadow: 0 0 6px rgba(255, 230, 0, 0.3);
 }
 
-/* ── Buttons ────────────────────────────────────── */
+/* Buttons */
 .btn-row {
     display: flex;
     gap: 10px;
@@ -507,7 +502,7 @@ body::before {
     font-size: 0.9rem;
 }
 
-/* ── Process Form ───────────────────────────────── */
+/* Process Form */
 .process-form {
     display: flex;
     gap: 10px;
@@ -550,7 +545,7 @@ body::before {
     box-shadow: 0 0 8px rgba(0, 255, 100, 0.2);
 }
 
-/* ── Process Chips ──────────────────────────────── */
+/* Process Chips */
 .process-chips {
     display: flex;
     flex-wrap: wrap;
@@ -622,7 +617,7 @@ body::before {
     box-shadow: 0 0 8px rgba(255, 45, 149, 0.3);
 }
 
-/* ── Gantt Chart ────────────────────────────────── */
+/* Gantt Chart */
 .panel-gantt,
 .panel-results {
     max-width: 1200px;
@@ -818,7 +813,7 @@ body::before {
     }
 }
 
-/* ── Results Table ──────────────────────────────── */
+/* Results Table */
 .results-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -891,7 +886,7 @@ tbody tr:nth-child(even) {
     box-shadow: 0 0 6px currentColor;
 }
 
-/* ── Metric Cards ───────────────────────────────── */
+/* Metric Cards */
 .metrics-cards {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -923,7 +918,7 @@ tbody tr:nth-child(even) {
     text-shadow: 0 0 12px rgba(0, 255, 100, 0.4);
 }
 
-/* ── Battle Mode (Side-by-Side) ────────────────── */
+/* Battle Mode */
 .battle-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1045,7 +1040,7 @@ tbody tr:nth-child(even) {
     text-shadow: 0 0 6px rgba(255, 230, 0, 0.3);
 }
 
-/* ── Algorithm Select for Battle ───────────────── */
+/* Algorithm Select for Battle */
 .battle-select-row {
     display: flex;
     align-items: center;
@@ -1087,7 +1082,7 @@ tbody tr:nth-child(even) {
     color: var(--text);
 }
 
-/* ── Toast ───────────────────────────────────────── */
+/* Toast */
 .toast {
     position: fixed;
     bottom: 28px;
@@ -1145,7 +1140,7 @@ tbody tr:nth-child(even) {
     background: rgba(0, 255, 100, 0.4);
 }
 
-/* ── Power bar for the score comparison ────────── */
+/* Power bar for the score comparison */
 .power-bar-wrap {
     height: 8px;
     background: rgba(0, 0, 0, 0.4);
@@ -1162,7 +1157,7 @@ tbody tr:nth-child(even) {
     box-shadow: 0 0 8px;
 }
 
-/* ── Responsive ──────────────────────────────────── */
+/* Responsive */
 @media (max-width: 860px) {
     .main-grid {
         grid-template-columns: 1fr;

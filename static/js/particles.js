@@ -1,7 +1,3 @@
-/**
- * particles.js — Retro Arcade Background
- * Floating pixel characters and 8-bit symbols.
- */
 (function () {
     const canvas = document.createElement('canvas');
     canvas.id = 'bg-canvas';
@@ -28,11 +24,11 @@
         mouse.y = e.clientY;
     });
 
-    /* Retro arcade symbols */
+    // OS related symbols just for fun
     const SYMBOLS = [
         '👾', '🎮', '🕹', '💀', '⭐', '🚀', '💾', '🔥',
         '♠', '♣', '♥', '♦', '●', '■', '▲', '★',
-        'CPU', 'RAM', 'SYS', 'I/O', 'IRQ', 'RUN',
+        'CPU', 'RAM', 'SYS', 'I/O', 'IPS', 'RUN',
         '>>>', '...', '|||',
     ];
 
@@ -132,7 +128,7 @@
         }
     }
 
-    /* Grid lines for retro feel */
+    // Grid lines
     function drawGrid() {
         ctx.strokeStyle = 'rgba(0,255,100,0.025)';
         ctx.lineWidth = 1;
@@ -151,7 +147,7 @@
         }
     }
 
-    /* Connection lines */
+    // Connection lines
     function drawConnections(syms) {
         const LINK_DIST = 90;
         for (let i = 0; i < syms.length; i++) {

@@ -1,8 +1,3 @@
-"""
-OS CPU Scheduling Algorithms
-Returns timeline (Gantt chart data) and per-process metrics.
-"""
-
 def fcfs(processes):
     """First Come First Serve — Non-preemptive."""
     procs = sorted(processes, key=lambda p: (p['at'], p['pid']))
@@ -193,7 +188,7 @@ def priority_preemptive(processes):
 
 
 def round_robin(processes, quantum=2):
-    """Round Robin scheduling."""
+    """Round Robin"""
     n = len(processes)
     rem = sorted([dict(p) for p in processes], key=lambda p: p['at'])
     remaining_bt = {p['pid']: p['bt'] for p in rem}
@@ -253,7 +248,7 @@ def round_robin(processes, quantum=2):
     return timeline, results
 
 
-# ── dispatcher ──────────────────────────────────────────────
+# dispatches using the REST API 
 ALGORITHMS = {
     'fcfs':                   fcfs,
     'sjf_non_preemptive':     sjf_non_preemptive,
