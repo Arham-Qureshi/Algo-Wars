@@ -66,21 +66,6 @@ const ganttTimestamps = $('ganttTimestamps');
 const resultsSection = $('resultsSection');
 const resultsBody = $('resultsBody');
 
-/* ── Init particles ─────────────────────────────── */
-(function initParticles() {
-    const container = $('particles');
-    for (let i = 0; i < 30; i++) {
-        const p = document.createElement('div');
-        p.classList.add('particle');
-        const size = Math.random() * 4 + 2;
-        p.style.width = size + 'px';
-        p.style.height = size + 'px';
-        p.style.left = Math.random() * 100 + '%';
-        p.style.animationDuration = (Math.random() * 15 + 10) + 's';
-        p.style.animationDelay = (Math.random() * 10) + 's';
-        container.appendChild(p);
-    }
-})();
 
 /* ── Helpers ─────────────────────────────────────── */
 function isPriority() {
