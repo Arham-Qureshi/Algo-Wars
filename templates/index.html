@@ -1,79 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OS Scheduling Simulator</title>
-    <meta name="description" content="Interactive CPU Scheduling Algorithm Simulator — visualize FCFS, SJF, SRTF, Priority, and Round Robin scheduling with Gantt charts.">
+    <title>ALGO WARS — CPU Scheduling Arcade</title>
+    <meta name="description"
+        content="Retro arcade-style CPU scheduling simulator. Live step-by-step simulation and algorithm battle mode. FCFS, SJF, SRTF, Priority, Round Robin.">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <!-- ══════════ Floating particles ══════════ -->
-    <div class="particles" id="particles"></div>
 
+<body>
     <!-- ══════════ Header ══════════ -->
     <header class="app-header">
         <div class="header-glow"></div>
         <h1 class="header-title">
-            <span class="title-icon">⚙️</span>
-            <span>SCHEDULING</span>
-            <span class="title-highlight">SIMULATOR</span>
+            <span class="title-icon">👾</span>
+            <span>ALGO</span>
+            <span class="title-highlight">WARS</span>
         </h1>
-        <p class="header-sub">Visualize how your OS schedules processes</p>
+        <p class="header-sub">INSERT COIN ▸ SELECT ALGORITHM ▸ FIGHT!</p>
     </header>
+
+    <!-- ══════════ Mode Toggle ══════════ -->
+    <div class="mode-bar">
+        <button class="mode-btn active" id="modeSingle" data-mode="single">⚔ Single Play</button>
+        <button class="mode-btn" id="modeBattle" data-mode="battle">🆚 Algorithm Battle</button>
+    </div>
 
     <!-- ══════════ Main Grid ══════════ -->
     <main class="main-grid">
 
-        <!-- ── Left Panel: Algorithm Selector ── -->
-        <section class="panel panel-algo glass-card" id="algoPanel">
-            <h2 class="panel-title">Select Algorithm</h2>
-            <div class="select-wrap">
-                <select id="algoSelect">
-                    <option value="fcfs">First Come First Serve (FCFS)</option>
-                    <option value="sjf_non_preemptive">Shortest Job First (Non-Preemptive)</option>
-                    <option value="srtf">Shortest Remaining Time First (Preemptive)</option>
-                    <option value="priority_non_preemptive">Priority Scheduling (Non-Preemptive)</option>
-                    <option value="priority_preemptive">Priority Scheduling (Preemptive)</option>
-                    <option value="round_robin">Round Robin</option>
-                </select>
-            </div>
+        <!-- ── Left Panel: Algo Selector ── -->
+        <section class="panel panel-algo pixel-card" id="algoPanel">
+            <h2 class="panel-title">🕹 Select Algorithm</h2>
 
-            <!-- Tooltip icon for algorithm info -->
-            <div class="info-tooltip-wrap" id="algoInfoWrap">
-                <span class="info-icon" id="algoInfoIcon">ℹ️</span>
-                <div class="info-tooltip" id="algoTooltip">
-                    <!-- Populated by JS -->
+            <!-- Single mode selector -->
+            <div id="singleAlgoWrap">
+                <div class="select-wrap">
+                    <select id="algoSelect">
+                        <option value="fcfs">FCFS — First Come First Serve</option>
+                        <option value="sjf_non_preemptive">SJF — Shortest Job First</option>
+                        <option value="srtf">SRTF — Shortest Remaining Time</option>
+                        <option value="priority_non_preemptive">Priority (Non-Preemptive)</option>
+                        <option value="priority_preemptive">Priority (Preemptive)</option>
+                        <option value="round_robin">Round Robin</option>
+                    </select>
                 </div>
             </div>
 
-            <!-- Quantum input (visible only for Round Robin) -->
+            <!-- Battle mode selectors -->
+            <div id="battleAlgoWrap" class="hidden">
+                <div class="battle-select-row">
+                    <select id="battleAlgo1">
+                        <option value="fcfs">FCFS</option>
+                        <option value="sjf_non_preemptive">SJF (NP)</option>
+                        <option value="srtf">SRTF</option>
+                        <option value="priority_non_preemptive">Priority (NP)</option>
+                        <option value="priority_preemptive">Priority (P)</option>
+                        <option value="round_robin">Round Robin</option>
+                    </select>
+                    <span
+                        style="font-family: var(--font); color: var(--neon-yellow); font-size: 0.7rem; text-shadow: 0 0 8px rgba(255,230,0,0.4);">VS</span>
+                    <select id="battleAlgo2">
+                        <option value="fcfs">FCFS</option>
+                        <option value="sjf_non_preemptive">SJF (NP)</option>
+                        <option value="srtf" selected>SRTF</option>
+                        <option value="priority_non_preemptive">Priority (NP)</option>
+                        <option value="priority_preemptive">Priority (P)</option>
+                        <option value="round_robin">Round Robin</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Tooltip -->
+            <div class="info-tooltip-wrap" id="algoInfoWrap">
+                <span class="info-icon" id="algoInfoIcon">ℹ️</span>
+                <div class="info-tooltip" id="algoTooltip"></div>
+            </div>
+
+            <!-- Quantum -->
             <div class="quantum-wrap hidden" id="quantumWrap">
-                <label for="quantumInput">Time Quantum</label>
+                <label for="quantumInput">TIME QUANTUM</label>
                 <input type="number" id="quantumInput" min="1" value="2">
             </div>
 
             <!-- Priority note -->
             <p class="priority-note hidden" id="priorityNote">
-                ⚠️ Lower number = higher priority
+                ⚠ LOWER NUMBER = HIGHER PRIORITY
             </p>
 
             <div class="btn-row">
                 <button class="btn btn-primary" id="btnSimulate">
-                    <span class="btn-icon">▶</span> Simulate
+                    <span class="btn-icon">▶</span> START
                 </button>
                 <button class="btn btn-ghost" id="btnRandom">
-                    🎲 Random
+                    🎲 RANDOM
                 </button>
             </div>
         </section>
 
         <!-- ── Right Panel: Process List ── -->
-        <section class="panel panel-procs glass-card">
+        <section class="panel panel-procs pixel-card">
             <div class="panel-header-row">
-                <h2 class="panel-title">Processes</h2>
+                <h2 class="panel-title">📋 Processes</h2>
                 <span class="badge" id="procCount">0</span>
             </div>
 
@@ -90,38 +120,42 @@
                     <label>Priority</label>
                     <input type="number" id="inputPriority" min="0" value="0" placeholder="0">
                 </div>
-                <button class="btn btn-add" id="btnAdd">+ Add</button>
+                <button class="btn btn-add" id="btnAdd">+ ADD</button>
             </div>
 
-            <div class="process-chips" id="processChips">
-                <!-- Chips rendered by JS -->
-            </div>
-
-            <button class="btn btn-danger btn-sm" id="btnClear">Clear All</button>
+            <div class="process-chips" id="processChips"></div>
+            <button class="btn btn-danger btn-sm" id="btnClear">CLEAR ALL</button>
         </section>
     </main>
 
-    <!-- ══════════ Gantt Chart Section ══════════ -->
-    <section class="panel panel-gantt glass-card" id="ganttSection" style="display:none;">
+    <!-- ══════════ Single Mode: Gantt Chart ══════════ -->
+    <section class="panel panel-gantt pixel-card" id="ganttSection" style="display:none;">
         <div class="panel-header-row">
-            <h2 class="panel-title">Gantt Chart</h2>
+            <h2 class="panel-title">📊 Gantt Chart</h2>
             <span class="info-icon" id="ganttInfoIcon">ℹ️</span>
             <div class="info-tooltip" id="ganttTooltip">
-                A Gantt chart is a horizontal bar chart that illustrates the schedule of processes over time. Each colored bar represents a process being executed on the CPU during that time interval.
+                A Gantt chart shows the schedule of processes over time. Each colored bar is a process executing on
+                the CPU during that interval. Watch the LIVE simulation build in real-time!
             </div>
         </div>
-        <div class="gantt-container" id="ganttContainer">
-            <!-- Bars rendered by JS -->
+        <!-- Live Simulation Controls -->
+        <div class="sim-controls" id="simControls">
+            <label>SPEED</label>
+            <input type="range" class="speed-slider" id="speedSlider" min="1" max="10" value="5">
+            <span class="speed-label" id="speedLabel">5x</span>
+            <div class="cpu-indicator">
+                <span class="cpu-dot" id="cpuDot"></span>
+                <span id="cpuStatus">IDLE</span>
+            </div>
         </div>
+        <div class="gantt-container" id="ganttContainer"></div>
         <div class="gantt-timestamps" id="ganttTimestamps"></div>
     </section>
 
-    <!-- ══════════ Results Section ══════════ -->
-    <section class="panel panel-results glass-card" id="resultsSection" style="display:none;">
-        <h2 class="panel-title">Results</h2>
-
+    <!-- ══════════ Single Mode: Results ══════════ -->
+    <section class="panel panel-results pixel-card" id="resultsSection" style="display:none;">
+        <h2 class="panel-title">🏆 High Score</h2>
         <div class="results-grid">
-            <!-- Table -->
             <div class="table-wrap">
                 <table id="resultsTable">
                     <thead>
@@ -134,40 +168,66 @@
                             <th>WT</th>
                         </tr>
                     </thead>
-                    <tbody id="resultsBody">
-                    </tbody>
+                    <tbody id="resultsBody"></tbody>
                 </table>
             </div>
-
-            <!-- Metrics Cards -->
             <div class="metrics-cards">
-                <div class="metric-card glass-card">
-                    <span class="metric-label">Avg Waiting Time</span>
+                <div class="metric-card pixel-card">
+                    <span class="metric-label">Avg Wait</span>
                     <span class="metric-value" id="metricWT">—</span>
                 </div>
-                <div class="metric-card glass-card">
-                    <span class="metric-label">Avg Turnaround Time</span>
+                <div class="metric-card pixel-card">
+                    <span class="metric-label">Avg TAT</span>
                     <span class="metric-value" id="metricTAT">—</span>
                 </div>
-                <div class="metric-card glass-card">
-                    <span class="metric-label">Avg Completion Time</span>
+                <div class="metric-card pixel-card">
+                    <span class="metric-label">Avg CT</span>
                     <span class="metric-value" id="metricCT">—</span>
                 </div>
-                <div class="metric-card glass-card">
+                <div class="metric-card pixel-card">
                     <span class="metric-label">Throughput</span>
                     <span class="metric-value" id="metricTP">—</span>
                 </div>
-                <div class="metric-card glass-card">
-                    <span class="metric-label">CPU Utilization</span>
+                <div class="metric-card pixel-card">
+                    <span class="metric-label">CPU Util</span>
                     <span class="metric-value" id="metricCPU">—</span>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- ══════════ Battle Mode: Results ══════════ -->
+    <div id="battleWinner" class="battle-winner-banner" style="display:none;"></div>
+    <div class="battle-grid" id="battleSection" style="display:none;">
+        <!-- Player 1 -->
+        <div class="battle-column" id="battleCol1">
+            <div class="battle-header player-1" id="battleTitle1">PLAYER 1</div>
+            <div class="panel pixel-card">
+                <h2 class="panel-title" style="color: var(--neon-pink); text-shadow: 0 0 8px rgba(255,45,149,0.3);">
+                    GANTT</h2>
+                <div class="gantt-container" id="battleGantt1"></div>
+                <div class="gantt-timestamps" id="battleTs1"></div>
+            </div>
+            <div class="panel pixel-card" id="battleMetrics1"></div>
+        </div>
+        <!-- Player 2 -->
+        <div class="battle-column" id="battleCol2">
+            <div class="battle-header player-2" id="battleTitle2">PLAYER 2</div>
+            <div class="panel pixel-card">
+                <h2 class="panel-title" style="color: var(--neon-cyan); text-shadow: 0 0 8px rgba(0,229,255,0.3);">GANTT
+                </h2>
+                <div class="gantt-container" id="battleGantt2"></div>
+                <div class="gantt-timestamps" id="battleTs2"></div>
+            </div>
+            <div class="panel pixel-card" id="battleMetrics2"></div>
+        </div>
+    </div>
+
     <!-- ══════════ Toast ══════════ -->
     <div class="toast hidden" id="toast"></div>
 
+    <script src="{{ url_for('static', filename='js/particles.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
+
 </html>
