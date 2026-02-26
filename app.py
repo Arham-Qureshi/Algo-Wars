@@ -1,7 +1,10 @@
 from flask import Flask, render_template, request, jsonify, Response
+from whitenoise import WhiteNoise
 import scheduler
 
 app = Flask(__name__)
+# Add WhiteNoise to serve static files (CSS/JS) properly on production (Render)
+app.wsgi_app = WhiteNoise(app.wsgi_app, root='static/', prefix='static/')
 
 # UPDATE THIS after Railway gives you your deployment URL
 SITE_URL = 'https://algo-wars.up.railway.app'
