@@ -7,7 +7,7 @@ app = Flask(__name__)
 app.wsgi_app = WhiteNoise(app.wsgi_app, root='static/', prefix='static/')
 
 # UPDATE THIS after Railway gives you your deployment URL
-SITE_URL = 'https://algo-wars.up.railway.app'
+SITE_URL = 'https://algo-wars.onrender.com'
 
 
 @app.route('/robots.txt')
