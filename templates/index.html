@@ -4,9 +4,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALGO WARS — CPU Scheduling Arcade</title>
+
+    <!-- ═══ Primary SEO ═══ -->
+    <title>ALGO WARS — CPU Scheduling Simulator | Interactive Gantt Chart & Algorithm Battle</title>
     <meta name="description"
-        content="Retro arcade-style CPU scheduling simulator. Live step-by-step simulation and algorithm battle mode. FCFS, SJF, SRTF, Priority, Round Robin.">
+        content="Free interactive CPU scheduling simulator with retro arcade aesthetics. Visualize FCFS, SJF, SRTF, Priority & Round Robin algorithms with animated Gantt charts and head-to-head algorithm battles.">
+    <meta name="keywords"
+        content="CPU scheduling simulator, FCFS, SJF, SRTF, Round Robin, Priority Scheduling, Gantt chart, OS scheduling, algorithm comparison, operating system simulator, process scheduling, preemptive scheduling, non-preemptive scheduling">
+    <meta name="author" content="Arham Qureshi">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://algo-wars.onrender.com/">
+    <meta name="theme-color" content="#0a0a23">
+
+    <!-- ═══ Open Graph (Facebook, LinkedIn, Discord) ═══ -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="ALGO WARS — CPU Scheduling Simulator">
+    <meta property="og:description"
+        content="Visualize CPU scheduling algorithms with animated Gantt charts. Battle FCFS vs SJF vs SRTF vs Priority vs Round Robin in real-time!">
+    <meta property="og:url" content="https://algo-wars.onrender.com/">
+    <meta property="og:site_name" content="Algo Wars">
+    <meta property="og:locale" content="en_US">
+
+    <!-- ═══ Twitter Card ═══ -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ALGO WARS — CPU Scheduling Simulator">
+    <meta name="twitter:description"
+        content="Interactive retro-arcade CPU scheduling simulator. Animated Gantt charts & Algorithm Battle mode.">
+
+    <!-- ═══ JSON-LD Structured Data ═══ -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Algo Wars — CPU Scheduling Simulator",
+        "url": "https://algo-wars.onrender.com/",
+        "description": "Free interactive CPU scheduling simulator with retro arcade aesthetics. Visualize FCFS, SJF, SRTF, Priority & Round Robin scheduling algorithms with animated Gantt charts and algorithm battle mode.",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "author": {
+            "@type": "Person",
+            "name": "Arham Qureshi",
+            "url": "https://github.com/Arham-Qureshi"
+        },
+        "featureList": [
+            "FCFS Scheduling",
+            "Shortest Job First (SJF)",
+            "Shortest Remaining Time First (SRTF)",
+            "Priority Scheduling (Preemptive & Non-Preemptive)",
+            "Round Robin Scheduling",
+            "Animated Gantt Charts",
+            "Algorithm Battle Mode",
+            "Real-time CPU Utilization Metrics"
+        ]
+    }
+    </script>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 
@@ -225,6 +282,24 @@
 
     <!-- ══════════ Toast ══════════ -->
     <div class="toast hidden" id="toast"></div>
+
+    <!-- ══════════ Noscript Fallback (SEO) ══════════ -->
+    <noscript>
+        <div style="text-align:center; padding:2rem; color:#fff; background:#0a0a23;">
+            <h2>Algo Wars — CPU Scheduling Simulator</h2>
+            <p>This interactive simulator requires JavaScript enabled to run. It supports FCFS, SJF, SRTF, Priority
+                (Preemptive & Non-Preemptive), and Round Robin scheduling algorithms with animated Gantt chart
+                visualization and algorithm battle mode.</p>
+        </div>
+    </noscript>
+
+    <!-- ══════════ Semantic Footer ══════════ -->
+    <footer class="app-footer" role="contentinfo">
+        <p>ALGO WARS — CPU Scheduling Simulator &copy; 2025
+            <a href="https://github.com/Arham-Qureshi/Algo-Wars" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </p>
+        <p class="footer-sub">FCFS · SJF · SRTF · Priority · Round Robin — Visualize & Compare Scheduling Algorithms</p>
+    </footer>
 
     <script src="{{ url_for('static', filename='js/particles.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
