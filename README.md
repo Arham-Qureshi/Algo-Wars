@@ -1,8 +1,11 @@
-# Algo-Wars
+# Algo-Wars: OS CPU Scheduling Simulator
 
-**OS CPU Scheduling Simulator**
+![Python](https://img.shields.io/badge/Python-3.8%2B-blue?style=flat-square&logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-2.x-lightgrey?style=flat-square&logo=flask&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6%2B-yellow?style=flat-square&logo=javascript&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
 
-Algo-Wars is a browser-based, interactive CPU scheduling simulator built to demonstrate and compare the behaviour of classical operating system process scheduling algorithms. The application features a retro arcade visual style, live animated Gantt charts, real-time performance metrics, and an Algorithm Battle mode that allows direct side-by-side comparison of two scheduling strategies.
+Algo-Wars is a professional browser-based interactive CPU scheduling simulator built to demonstrate, analyze, and compare the behavior of classical operating system process scheduling algorithms. The application features a retro arcade visual style, live animated Gantt charts, real-time performance metrics, and an innovative **Algorithm Battle** mode for direct side-by-side comparisons of scheduling strategies.
 
 ---
 
@@ -63,63 +66,16 @@ Each added process is displayed as a removable chip in the process queue panel. 
 
 ## Supported Algorithms
 
-### First Come First Serve (FCFS)
+The simulator supports the following classical CPU scheduling algorithms. Configuration of required inputs happens dynamically based on the algorithm selected.
 
-**Type:** Non-Preemptive
-
-Processes are executed strictly in the order of their arrival time. The process that arrives first is scheduled first. If multiple processes arrive at the same time, they are ordered by their process identifier. FCFS is the simplest scheduling algorithm but is susceptible to the convoy effect, where short processes are blocked behind long-running ones, resulting in high average waiting times.
-
-**Required inputs:** Arrival Time, Burst Time
-
----
-
-### Shortest Job First (SJF)
-
-**Type:** Non-Preemptive
-
-At each scheduling decision point, the algorithm selects the process in the ready queue with the smallest burst time. If two processes have equal burst times, the one that arrived earlier is selected. SJF produces the minimum possible average waiting time for a given set of processes, but can cause indefinite starvation of longer processes if shorter ones continue to arrive.
-
-**Required inputs:** Arrival Time, Burst Time
-
----
-
-### Shortest Remaining Time First (SRTF)
-
-**Type:** Preemptive
-
-SRTF is the preemptive variant of SJF. At every clock tick, the scheduler evaluates all processes in the ready queue and selects the one with the least remaining burst time. If a newly arrived process has a shorter remaining burst time than the currently running process, it will preempt it immediately. SRTF achieves optimal average waiting time but incurs high context-switch overhead.
-
-**Required inputs:** Arrival Time, Burst Time
-
----
-
-### Priority Scheduling (Non-Preemptive)
-
-**Type:** Non-Preemptive
-
-Processes are assigned a numeric priority value. Lower values represent higher priority. At each scheduling point, the process with the highest priority (lowest numeric value) in the ready queue is selected. Once a process begins execution, it runs to completion without being interrupted, regardless of the arrival of higher-priority processes.
-
-**Required inputs:** Arrival Time, Burst Time, Priority
-
----
-
-### Priority Scheduling (Preemptive)
-
-**Type:** Preemptive
-
-Functions identically to non-preemptive priority scheduling, with the exception that a newly arrived process with a higher priority than the currently executing process will immediately preempt it. The preempted process returns to the ready queue and resumes execution when no higher-priority process is available.
-
-**Required inputs:** Arrival Time, Burst Time, Priority
-
----
-
-### Round Robin
-
-**Type:** Preemptive
-
-Each process in the ready queue is assigned a fixed time slice, known as the time quantum (configurable by the user, default: 2 units). Processes are executed in circular order; when a process exhausts its quantum without completing, it is placed at the back of the queue. Round Robin is optimized for time-sharing environments and provides equitable CPU distribution among all processes.
-
-**Required inputs:** Arrival Time, Burst Time, Time Quantum (global setting)
+| Algorithm | Type | Required Inputs |
+| :--- | :--- | :--- |
+| **First Come First Serve (FCFS)** | Non-Preemptive | Arrival Time, Burst Time |
+| **Shortest Job First (SJF)** | Non-Preemptive | Arrival Time, Burst Time |
+| **Shortest Remaining Time First (SRTF)** | Preemptive | Arrival Time, Burst Time |
+| **Priority Scheduling** | Non-Preemptive | Arrival Time, Burst Time, Priority |
+| **Priority Scheduling** | Preemptive | Arrival Time, Burst Time, Priority |
+| **Round Robin (RR)** | Preemptive | Arrival Time, Burst Time, Time Quantum |
 
 ---
 
