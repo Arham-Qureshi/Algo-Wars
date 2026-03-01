@@ -3,10 +3,9 @@ from whitenoise import WhiteNoise
 import scheduler
 
 app = Flask(__name__)
-# Add WhiteNoise to serve static files (CSS/JS) properly on production (Render)
+# whitenoise only load the static file on deployment!
 app.wsgi_app = WhiteNoise(app.wsgi_app, root='static/', prefix='static/')
 
-# UPDATE THIS after Railway gives you your deployment URL
 SITE_URL = 'https://algo-wars.onrender.com'
 
 
