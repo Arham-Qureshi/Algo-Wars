@@ -1,10 +1,8 @@
 def fcfs(processes):
-    """First Come First Serve — Non-preemptive."""
     procs = sorted(processes, key=lambda p: (p['at'], p['pid']))
     timeline = []
     current_time = 0
     results = []
-
     for p in procs:
         if current_time < p['at']:
             timeline.append({'pid': 'Idle', 'start': current_time, 'end': p['at']})
@@ -17,12 +15,9 @@ def fcfs(processes):
         wt = tat - p['bt']
         results.append({**p, 'ct': ct, 'tat': tat, 'wt': wt})
         current_time = end
-
     return timeline, results
 
-
 def sjf_non_preemptive(processes):
-    """Shortest Job First — Non-preemptive."""
     remaining = [dict(p) for p in processes]
     timeline = []
     results = []
@@ -30,7 +25,6 @@ def sjf_non_preemptive(processes):
     completed = 0
     n = len(remaining)
     done = [False] * n
-
     while completed < n:
         available = [i for i in range(n)
                      if not done[i] and remaining[i]['at'] <= current_time]
@@ -39,7 +33,6 @@ def sjf_non_preemptive(processes):
             timeline.append({'pid': 'Idle', 'start': current_time, 'end': next_arrival})
             current_time = next_arrival
             continue
-
         idx = min(available, key=lambda i: (remaining[i]['bt'], remaining[i]['at']))
         p = remaining[idx]
         start = current_time
@@ -52,12 +45,9 @@ def sjf_non_preemptive(processes):
         current_time = end
         done[idx] = True
         completed += 1
-
     return timeline, results
 
-
 def srtf(processes):
-    """Shortest Remaining Time First — Preemptive SJF."""
     n = len(processes)
     rem = [dict(p) for p in processes]
     remaining_bt = [p['bt'] for p in rem]
@@ -67,7 +57,6 @@ def srtf(processes):
     completed = 0
     current_time = 0
     prev_pid = None
-
     while completed < n:
         available = [i for i in range(n)
                      if not done[i] and rem[i]['at'] <= current_time]
@@ -80,19 +69,15 @@ def srtf(processes):
             current_time = next_arrival
             prev_pid = 'Idle'
             continue
-
         idx = min(available, key=lambda i: (remaining_bt[i], rem[i]['at']))
         pid = rem[idx]['pid']
-
         if pid == prev_pid and timeline:
             timeline[-1]['end'] = current_time + 1
         else:
             timeline.append({'pid': pid, 'start': current_time, 'end': current_time + 1})
-
         remaining_bt[idx] -= 1
         current_time += 1
         prev_pid = pid
-
         if remaining_bt[idx] == 0:
             done[idx] = True
             completed += 1
@@ -105,7 +90,6 @@ def srtf(processes):
 
 
 def priority_non_preemptive(processes):
-    """Priority Scheduling — Non-preemptive. Lower number = higher priority."""
     remaining = [dict(p) for p in processes]
     timeline = []
     results = []
@@ -140,7 +124,6 @@ def priority_non_preemptive(processes):
 
 
 def priority_preemptive(processes):
-    """Priority Scheduling — Preemptive. Lower number = higher priority."""
     n = len(processes)
     rem = [dict(p) for p in processes]
     remaining_bt = [p['bt'] for p in rem]
@@ -188,7 +171,6 @@ def priority_preemptive(processes):
 
 
 def round_robin(processes, quantum=2):
-    """Round Robin"""
     n = len(processes)
     rem = sorted([dict(p) for p in processes], key=lambda p: p['at'])
     remaining_bt = {p['pid']: p['bt'] for p in rem}
@@ -199,7 +181,7 @@ def round_robin(processes, quantum=2):
     entered = [False] * n
     idx = 0
 
-    # Add first arrivals
+    # first arrivals
     for i, p in enumerate(rem):
         if p['at'] <= current_time and not entered[i]:
             queue.append(p)
@@ -207,7 +189,7 @@ def round_robin(processes, quantum=2):
 
     while queue or idx < n:
         if not queue:
-            # CPU idle until next process arrives
+            # CPU idle until next proc
             next_p = None
             for i, p in enumerate(rem):
                 if not entered[i]:
@@ -230,7 +212,7 @@ def round_robin(processes, quantum=2):
         remaining_bt[proc['pid']] -= exec_time
         current_time = end
 
-        # Add newly arrived processes before re-adding current
+# adding the new arrived proc first then the remaining proc
         for i, p in enumerate(rem):
             if not entered[i] and p['at'] <= current_time:
                 queue.append(p)
@@ -247,8 +229,7 @@ def round_robin(processes, quantum=2):
     results = [results_map[p['pid']] for p in rem if p['pid'] in results_map]
     return timeline, results
 
-
-# dispatches using the REST API 
+# parsing the datas for dynamic redering
 ALGORITHMS = {
     'fcfs':                   fcfs,
     'sjf_non_preemptive':     sjf_non_preemptive,
