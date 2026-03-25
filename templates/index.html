@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- ═══ Primary SEO ═══ -->
+    <!-- SEO-->
     <title>ALGO WARS — CPU Scheduling Simulator | Interactive Gantt Chart & Algorithm Battle</title>
     <meta name="description"
         content="Free interactive CPU scheduling simulator with retro arcade aesthetics. Visualize FCFS, SJF, SRTF, Priority & Round Robin algorithms with animated Gantt charts and head-to-head algorithm battles.">
@@ -17,7 +17,6 @@
     <link rel="canonical" href="https://algo-wars.onrender.com/">
     <meta name="theme-color" content="#0a0a23">
 
-    <!-- ═══ Open Graph (Facebook, LinkedIn, Discord) ═══ -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="ALGO WARS — CPU Scheduling Simulator">
     <meta property="og:description"
@@ -26,13 +25,11 @@
     <meta property="og:site_name" content="Algo Wars">
     <meta property="og:locale" content="en_US">
 
-    <!-- ═══ Twitter Card ═══ -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="ALGO WARS — CPU Scheduling Simulator">
     <meta name="twitter:description"
         content="Interactive retro-arcade CPU scheduling simulator. Animated Gantt charts & Algorithm Battle mode.">
 
-    <!-- ═══ JSON-LD Structured Data ═══ -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -69,7 +66,7 @@
 </head>
 
 <body>
-    <!-- ══════════ Header ══════════ -->
+    <!-- Header -->
     <header class="app-header">
         <div class="header-glow"></div>
         <h1 class="header-title">
@@ -80,20 +77,16 @@
         <p class="header-sub">INSERT COIN ▸ SELECT ALGORITHM ▸ FIGHT!</p>
     </header>
 
-    <!-- ══════════ Mode Toggle ══════════ -->
     <div class="mode-bar">
         <button class="mode-btn active" id="modeSingle" data-mode="single">⚔ Single Play</button>
         <button class="mode-btn" id="modeBattle" data-mode="battle">🆚 Algorithm Battle</button>
     </div>
 
-    <!-- ══════════ Main Grid ══════════ -->
     <main class="main-grid">
 
-        <!-- ── Left Panel: Algo Selector ── -->
         <section class="panel panel-algo pixel-card" id="algoPanel">
             <h2 class="panel-title">🕹 Select Algorithm</h2>
 
-            <!-- Single mode selector -->
             <div id="singleAlgoWrap">
                 <div class="select-wrap">
                     <select id="algoSelect">
@@ -107,7 +100,6 @@
                 </div>
             </div>
 
-            <!-- Battle mode selectors -->
             <div id="battleAlgoWrap" class="hidden">
                 <div class="battle-select-row">
                     <select id="battleAlgo1">
@@ -131,19 +123,17 @@
                 </div>
             </div>
 
-            <!-- Tooltip -->
             <div class="info-tooltip-wrap" id="algoInfoWrap">
                 <span class="info-icon" id="algoInfoIcon">ℹ️</span>
                 <div class="info-tooltip" id="algoTooltip"></div>
             </div>
 
-            <!-- Quantum -->
+            <!-- time slice-->
             <div class="quantum-wrap hidden" id="quantumWrap">
                 <label for="quantumInput">TIME QUANTUM</label>
                 <input type="number" id="quantumInput" min="1" value="2">
             </div>
 
-            <!-- Priority note -->
             <p class="priority-note hidden" id="priorityNote">
                 ⚠ LOWER NUMBER = HIGHER PRIORITY
             </p>
@@ -158,7 +148,6 @@
             </div>
         </section>
 
-        <!-- ── Right Panel: Process List ── -->
         <section class="panel panel-procs pixel-card">
             <div class="panel-header-row">
                 <h2 class="panel-title">📋 Processes</h2>
@@ -186,7 +175,6 @@
         </section>
     </main>
 
-    <!-- ══════════ Single Mode: Gantt Chart ══════════ -->
     <section class="panel panel-gantt pixel-card" id="ganttSection" style="display:none;">
         <div class="panel-header-row">
             <h2 class="panel-title">📊 Gantt Chart</h2>
@@ -196,7 +184,6 @@
                 the CPU during that interval. Watch the LIVE simulation build in real-time!
             </div>
         </div>
-        <!-- Live Simulation Controls -->
         <div class="sim-controls" id="simControls">
             <label>SPEED</label>
             <input type="range" class="speed-slider" id="speedSlider" min="1" max="10" value="5">
@@ -210,7 +197,6 @@
         <div class="gantt-timestamps" id="ganttTimestamps"></div>
     </section>
 
-    <!-- ══════════ Single Mode: Results ══════════ -->
     <section class="panel panel-results pixel-card" id="resultsSection" style="display:none;">
         <h2 class="panel-title">🏆 High Score</h2>
         <div class="results-grid">
@@ -254,10 +240,10 @@
         </div>
     </section>
 
-    <!-- ══════════ Battle Mode: Results ══════════ -->
     <div id="battleWinner" class="battle-winner-banner" style="display:none;"></div>
     <div class="battle-grid" id="battleSection" style="display:none;">
-        <!-- Player 1 -->
+
+        <!-- proc 1 -->
         <div class="battle-column" id="battleCol1">
             <div class="battle-header player-1" id="battleTitle1">PLAYER 1</div>
             <div class="panel pixel-card">
@@ -268,7 +254,8 @@
             </div>
             <div class="panel pixel-card" id="battleMetrics1"></div>
         </div>
-        <!-- Player 2 -->
+
+        <!-- proc 2 -->
         <div class="battle-column" id="battleCol2">
             <div class="battle-header player-2" id="battleTitle2">PLAYER 2</div>
             <div class="panel pixel-card">
@@ -281,10 +268,8 @@
         </div>
     </div>
 
-    <!-- ══════════ Toast ══════════ -->
     <div class="toast hidden" id="toast"></div>
 
-    <!-- ══════════ Noscript Fallback (SEO) ══════════ -->
     <noscript>
         <div style="text-align:center; padding:2rem; color:#fff; background:#0a0a23;">
             <h2>Algo Wars — CPU Scheduling Simulator</h2>
@@ -294,7 +279,6 @@
         </div>
     </noscript>
 
-    <!-- ══════════ Semantic Footer ══════════ -->
     <footer class="app-footer" role="contentinfo">
         <p>ALGO WARS — CPU Scheduling Simulator &copy; 2026
             <a href="https://github.com/Arham-Qureshi/Algo-Wars" target="_blank" rel="noopener noreferrer">GitHub</a>
