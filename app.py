@@ -57,10 +57,9 @@ def simulate():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
-"""Run two algorithms on the same process set (for battle)"""
+# runs 2 algos for side by side comparison
 @app.route('/api/compare', methods=['POST'])
 def compare():
-    """gets the empty JSON and returns it by filling the processed data"""
     data = request.get_json() 
     algo1 = data.get('algorithm1', 'fcfs')
     algo2 = data.get('algorithm2', 'sjf_non_preemptive')
