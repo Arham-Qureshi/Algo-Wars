@@ -24,7 +24,6 @@
         mouse.y = e.clientY;
     });
 
-    // OS related symbols just for fun
     const SYMBOLS = [
         '👾', '🎮', '🕹', '💀', '⭐', '🚀', '💾', '🔥',
         '♠', '♣', '♥', '♦', '●', '■', '▲', '★',
@@ -112,7 +111,6 @@
                 const w = ctx.measureText(this.label).width;
                 const h = this.size + pad * 2;
 
-                // Pixel-style box
                 ctx.fillStyle = this.colorBase + '0.08)';
                 ctx.fillRect(-w / 2 - pad, -h / 2, w + pad * 2, h);
                 ctx.strokeStyle = this.colorBase + '0.25)';
@@ -128,7 +126,6 @@
         }
     }
 
-    // Grid lines
     function drawGrid() {
         ctx.strokeStyle = 'rgba(0,255,100,0.025)';
         ctx.lineWidth = 1;
@@ -147,7 +144,6 @@
         }
     }
 
-    // Connection lines
     function drawConnections(syms) {
         const LINK_DIST = 90;
         for (let i = 0; i < syms.length; i++) {

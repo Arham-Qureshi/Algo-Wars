@@ -1,13 +1,9 @@
-
-
-//Process colors palette 
 const COLORS = [
     '#00ff64', '#ff2d95', '#00e5ff', '#ffe600', '#ff8c00',
     '#b64dff', '#ff3333', '#2dd4bf', '#e879f9', '#38bdf8',
     '#facc15', '#4ade80', '#f97316', '#818cf8', '#a855f7',
 ];
 
-// Fun fake process names
 const PROCESS_NAMES = [
     'chrome.exe', 'discord.exe', 'spotify.exe', 'vscode.exe',
     'steam.exe', 'explorer.exe', 'node.js', 'python.exe',
@@ -17,7 +13,6 @@ const PROCESS_NAMES = [
     'npm.exe', 'java.exe', 'mysql.exe', 'redis.exe',
 ];
 
-// Algorithm descriptions
 const ALGO_INFO = {
     fcfs: {
         name: 'FCFS – First Come First Serve',
@@ -54,13 +49,10 @@ const ALGO_SHORT = {
     round_robin: 'Round Robin',
 };
 
-//State
 let processes = [];
 let pidCounter = 1;
-let currentMode = 'single'; // 'single' | 'battle'
+let currentMode = 'single';
 let liveSimTimer = null;
-
-//DOM refs
 const $ = (id) => document.getElementById(id);
 
 const algoSelect = $('algoSelect');
@@ -88,7 +80,6 @@ const speedLabel = $('speedLabel');
 const cpuDot = $('cpuDot');
 const cpuStatus = $('cpuStatus');
 
-// Mode elements
 const modeSingle = $('modeSingle');
 const modeBattle = $('modeBattle');
 const singleAlgoWrap = $('singleAlgoWrap');
@@ -96,8 +87,6 @@ const battleAlgoWrap = $('battleAlgoWrap');
 const battleSection = $('battleSection');
 const battleWinner = $('battleWinner');
 
-
-// Helpers
 function isPriority() {
     if (currentMode === 'battle') {
         return $('battleAlgo1').value.includes('priority') ||
@@ -125,7 +114,6 @@ function getRandomName() {
     return PROCESS_NAMES[Math.floor(Math.random() * PROCESS_NAMES.length)];
 }
 
-// themed AUDIO
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let audioCtx = null;
 
@@ -150,7 +138,6 @@ function playClearSound() { playBlip(200, 0.12, 'sawtooth'); }
 function playSimStart() { playBlip(880, 0.1); setTimeout(() => playBlip(1100, 0.1), 120); }
 function playWinSound() { playBlip(660, 0.1); setTimeout(() => playBlip(880, 0.1), 120); setTimeout(() => playBlip(1100, 0.15), 240); }
 
-// Mode Toggle
 function setMode(mode) {
     currentMode = mode;
     modeSingle.classList.toggle('active', mode === 'single');
@@ -158,7 +145,6 @@ function setMode(mode) {
     singleAlgoWrap.classList.toggle('hidden', mode === 'battle');
     battleAlgoWrap.classList.toggle('hidden', mode === 'single');
 
-    // Hide results from other mode
     if (mode === 'single') {
         battleSection.style.display = 'none';
         battleWinner.style.display = 'none';
@@ -175,7 +161,6 @@ function setMode(mode) {
 modeSingle.addEventListener('click', () => setMode('single'));
 modeBattle.addEventListener('click', () => setMode('battle'));
 
-// Algorithm selector change
 function updateAlgoUI() {
     const key = currentMode === 'battle' ? $('battleAlgo1').value : algoSelect.value;
     const info = ALGO_INFO[key];
@@ -192,12 +177,9 @@ $('battleAlgo1').addEventListener('change', updateAlgoUI);
 $('battleAlgo2').addEventListener('change', updateAlgoUI);
 updateAlgoUI();
 
-// Speed slider above GANNT chart
 speedSlider.addEventListener('input', () => {
     speedLabel.textContent = speedSlider.value + 'x';
 });
-
-// Add process
 function addProcess(at, bt, priority) {
     const pid = 'P' + pidCounter++;
     const color = COLORS[(processes.length) % COLORS.length];
@@ -220,14 +202,12 @@ btnAdd.addEventListener('click', () => {
     inputBT.focus();
 });
 
-// Enter key 
 [inputAT, inputBT, inputPriority].forEach(el => {
     el.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') btnAdd.click();
     });
 });
 
-// Random processes
 btnRandom.addEventListener('click', () => {
     processes = [];
     pidCounter = 1;
@@ -241,7 +221,6 @@ btnRandom.addEventListener('click', () => {
     showToast(`${count} RANDOM PROCESSES SPAWNED!`, 'success');
 });
 
-// Clear
 btnClear.addEventListener('click', () => {
     if (liveSimTimer) { clearInterval(liveSimTimer); liveSimTimer = null; }
     processes = [];
@@ -257,7 +236,6 @@ btnClear.addEventListener('click', () => {
     showToast('ALL PROCESSES TERMINATED', 'error');
 });
 
-// Render process chips
 function renderChips() {
     procCount.textContent = processes.length;
     processChips.innerHTML = '';
@@ -287,7 +265,6 @@ function renderChips() {
     });
 }
 
-// Simulate
 btnSimulate.addEventListener('click', async () => {
     if (processes.length === 0) return showToast('LOAD AT LEAST ONE PROCESS!', 'error');
 
@@ -300,7 +277,6 @@ btnSimulate.addEventListener('click', async () => {
     }
 });
 
-// SINGLE MODE Simulation
 async function runSingle() {
     btnSimulate.disabled = true;
     btnSimulate.innerHTML = '<span class="btn-icon">⏳</span> RUNNING…';
@@ -324,7 +300,6 @@ async function runSingle() {
         const data = await res.json();
         if (data.error) throw new Error(data.error);
 
-        // Live animate the Gantt chart
         await liveRenderGantt(data.timeline);
         renderResults(data.results, data);
         showToast('SIMULATION COMPLETE! ✨', 'success');
@@ -372,10 +347,8 @@ function liveRenderGantt(timeline) {
                 cpuDot.className = 'cpu-dot idle-dot';
                 cpuStatus.textContent = 'DONE';
 
-                // Render final timestamps
                 renderTimestamps(timeline, totalTime);
 
-                // Remove pulse from last bar
                 const allBars = ganttContainer.querySelectorAll('.gantt-bar');
                 allBars.forEach(b => b.classList.remove('cpu-active'));
 
@@ -385,11 +358,9 @@ function liveRenderGantt(timeline) {
 
             const seg = timeline[segIndex];
 
-            // Remove pulse from previous bar
             const allBars = ganttContainer.querySelectorAll('.gantt-bar');
             allBars.forEach(b => b.classList.remove('cpu-active'));
 
-            // Create new bar
             const bar = document.createElement('div');
             bar.className = 'gantt-bar cpu-active' + (seg.pid === 'Idle' ? ' idle' : '');
             const widthPct = ((seg.end - seg.start) / totalTime) * 100;
@@ -435,7 +406,6 @@ function renderTimestamps(timeline, totalTime) {
     });
 }
 
-// Render results table + metrics
 function renderResults(results, data) {
     resultsSection.style.display = 'block';
     resultsBody.innerHTML = '';
@@ -473,7 +443,6 @@ function renderResults(results, data) {
 }
 
 
-// BATTLE MODE Comparison
 async function runBattle() {
     const algo1 = $('battleAlgo1').value;
     const algo2 = $('battleAlgo2').value;
@@ -521,18 +490,14 @@ function renderBattle(data, algo1, algo2) {
     const r1 = data.result1;
     const r2 = data.result2;
 
-    // Titles
     $('battleTitle1').textContent = ALGO_SHORT[algo1] || algo1;
     $('battleTitle2').textContent = ALGO_SHORT[algo2] || algo2;
 
-    // Gantt charts
     renderStaticGantt(r1.timeline, $('battleGantt1'), $('battleTs1'));
     renderStaticGantt(r2.timeline, $('battleGantt2'), $('battleTs2'));
 
-    // Metrics comparison
     renderBattleMetrics(r1, r2, $('battleMetrics1'), $('battleMetrics2'));
 
-    // Determine winner (lower avg_wt is better)
     let p1Score = 0, p2Score = 0;
     if (r1.avg_wt < r2.avg_wt) p1Score++; else if (r2.avg_wt < r1.avg_wt) p2Score++;
     if (r1.avg_tat < r2.avg_tat) p1Score++; else if (r2.avg_tat < r1.avg_tat) p2Score++;
