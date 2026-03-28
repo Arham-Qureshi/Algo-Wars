@@ -38,6 +38,12 @@ const ALGO_INFO = {
         name: 'Round Robin',
         desc: 'Each process gets a fixed <b>time quantum</b>. Fair and responsive — ideal for time-sharing systems.',
     },
+    mlq: {
+        name: 'MLQ – Multilevel Queue',
+        desc: 'Processes are assigned to one of <b>3 fixed queues</b> based on type. ' +
+              '<b>Q1 System</b> (RR q=2), <b>Q2 Interactive</b> (RR q=4), <b>Q3 Batch</b> (FCFS). ' +
+              'Higher queues always preempt lower ones — mimicking modern OS design.',
+    },
 };
 
 const ALGO_SHORT = {
@@ -47,7 +53,11 @@ const ALGO_SHORT = {
     priority_non_preemptive: 'Priority(NP)',
     priority_preemptive: 'Priority(P)',
     round_robin: 'Round Robin',
+    mlq: 'MLQ',
 };
+
+const QUEUE_NAMES = { 1: 'System', 2: 'Interactive', 3: 'Batch' };
+const QUEUE_COLORS = { 1: '#ff2d95', 2: '#00e5ff', 3: '#ffe600' };
 
 let processes = [];
 let pidCounter = 1;
@@ -61,9 +71,11 @@ const quantumWrap = $('quantumWrap');
 const quantumInput = $('quantumInput');
 const priorityNote = $('priorityNote');
 const priorityGroup = $('priorityGroup');
+const queueTypeGroup = $('queueTypeGroup');
 const inputAT = $('inputAT');
 const inputBT = $('inputBT');
 const inputPriority = $('inputPriority');
+const inputQueueType = $('inputQueueType');
 const processChips = $('processChips');
 const procCount = $('procCount');
 const btnAdd = $('btnAdd');
@@ -82,12 +94,25 @@ const cpuStatus = $('cpuStatus');
 
 const modeSingle = $('modeSingle');
 const modeBattle = $('modeBattle');
+const modeAdvanced = $('modeAdvanced');
 const singleAlgoWrap = $('singleAlgoWrap');
 const battleAlgoWrap = $('battleAlgoWrap');
+const advancedAlgoWrap = $('advancedAlgoWrap');
 const battleSection = $('battleSection');
 const battleWinner = $('battleWinner');
 
+function isAdvancedMode() {
+    return currentMode === 'advanced';
+}
+
+function getActiveAlgo() {
+    if (currentMode === 'advanced') return $('advancedAlgoSelect').value;
+    if (currentMode === 'battle') return $('battleAlgo1').value;
+    return algoSelect.value;
+}
+
 function isPriority() {
+    if (currentMode === 'advanced') return false;
     if (currentMode === 'battle') {
         return $('battleAlgo1').value.includes('priority') ||
             $('battleAlgo2').value.includes('priority');
@@ -96,11 +121,16 @@ function isPriority() {
 }
 
 function needsQuantum() {
+    if (currentMode === 'advanced') return false;
     if (currentMode === 'battle') {
         return $('battleAlgo1').value === 'round_robin' ||
             $('battleAlgo2').value === 'round_robin';
     }
     return algoSelect.value === 'round_robin';
+}
+
+function needsQueueType() {
+    return currentMode === 'advanced' && $('advancedAlgoSelect').value === 'mlq';
 }
 
 function showToast(msg, type = 'success') {
@@ -142,17 +172,23 @@ function setMode(mode) {
     currentMode = mode;
     modeSingle.classList.toggle('active', mode === 'single');
     modeBattle.classList.toggle('active', mode === 'battle');
-    singleAlgoWrap.classList.toggle('hidden', mode === 'battle');
-    battleAlgoWrap.classList.toggle('hidden', mode === 'single');
+    modeAdvanced.classList.toggle('active', mode === 'advanced');
+    singleAlgoWrap.classList.toggle('hidden', mode !== 'single');
+    battleAlgoWrap.classList.toggle('hidden', mode !== 'battle');
+    advancedAlgoWrap.classList.toggle('hidden', mode !== 'advanced');
 
     if (mode === 'single') {
         battleSection.style.display = 'none';
         battleWinner.style.display = 'none';
         btnSimulate.innerHTML = '<span class="btn-icon">▶</span> START';
-    } else {
+    } else if (mode === 'battle') {
         ganttSection.style.display = 'none';
         resultsSection.style.display = 'none';
         btnSimulate.innerHTML = '<span class="btn-icon">⚔</span> FIGHT!';
+    } else {
+        battleSection.style.display = 'none';
+        battleWinner.style.display = 'none';
+        btnSimulate.innerHTML = '<span class="btn-icon">🧠</span> SIMULATE';
     }
 
     updateAlgoUI();
@@ -160,9 +196,10 @@ function setMode(mode) {
 
 modeSingle.addEventListener('click', () => setMode('single'));
 modeBattle.addEventListener('click', () => setMode('battle'));
+modeAdvanced.addEventListener('click', () => setMode('advanced'));
 
 function updateAlgoUI() {
-    const key = currentMode === 'battle' ? $('battleAlgo1').value : algoSelect.value;
+    const key = getActiveAlgo();
     const info = ALGO_INFO[key];
     if (info) {
         algoTooltip.innerHTML = `<strong>${info.name}</strong><br><br>${info.desc}`;
@@ -170,26 +207,32 @@ function updateAlgoUI() {
     quantumWrap.classList.toggle('hidden', !needsQuantum());
     priorityGroup.classList.toggle('hidden', !isPriority());
     priorityNote.classList.toggle('hidden', !isPriority());
+    queueTypeGroup.classList.toggle('hidden', !needsQueueType());
 }
 
 algoSelect.addEventListener('change', updateAlgoUI);
 $('battleAlgo1').addEventListener('change', updateAlgoUI);
 $('battleAlgo2').addEventListener('change', updateAlgoUI);
+$('advancedAlgoSelect').addEventListener('change', updateAlgoUI);
 updateAlgoUI();
 
 speedSlider.addEventListener('input', () => {
     speedLabel.textContent = speedSlider.value + 'x';
 });
-function addProcess(at, bt, priority) {
+function addProcess(at, bt, priority, queueId) {
     const pid = 'P' + pidCounter++;
     const color = COLORS[(processes.length) % COLORS.length];
     const name = getRandomName();
     const proc = { pid, at, bt, color, name };
     if (priority !== undefined) proc.priority = priority;
+    if (queueId !== undefined) proc.queue_id = queueId;
     processes.push(proc);
     renderChips();
     playAddSound();
-    showToast(`${pid} [${name}] LOADED`, 'success');
+
+    let label = `${pid} [${name}] LOADED`;
+    if (queueId !== undefined) label += ` → Q${queueId} ${QUEUE_NAMES[queueId]}`;
+    showToast(label, 'success');
 }
 
 btnAdd.addEventListener('click', () => {
@@ -197,7 +240,8 @@ btnAdd.addEventListener('click', () => {
     const bt = parseInt(inputBT.value) || 1;
     if (bt < 1) return showToast('BURST TIME MUST BE ≥ 1', 'error');
     const priority = isPriority() ? (parseInt(inputPriority.value) || 0) : undefined;
-    addProcess(at, bt, priority);
+    const queueId = needsQueueType() ? parseInt(inputQueueType.value) : undefined;
+    addProcess(at, bt, priority, queueId);
     inputBT.value = '';
     inputBT.focus();
 });
@@ -216,7 +260,8 @@ btnRandom.addEventListener('click', () => {
         const at = Math.floor(Math.random() * 8);
         const bt = Math.floor(Math.random() * 8) + 1;
         const priority = Math.floor(Math.random() * 5) + 1;
-        addProcess(at, bt, isPriority() ? priority : undefined);
+        const queueId = needsQueueType() ? (Math.floor(Math.random() * 3) + 1) : undefined;
+        addProcess(at, bt, isPriority() ? priority : undefined, queueId);
     }
     showToast(`${count} RANDOM PROCESSES SPAWNED!`, 'success');
 });
@@ -247,10 +292,18 @@ function renderChips() {
 
         let label = `${p.pid} &nbsp; AT:${p.at} &nbsp; BT:${p.bt}`;
         if (p.priority !== undefined) label += ` &nbsp; PR:${p.priority}`;
+        if (p.queue_id !== undefined) label += ` &nbsp; Q${p.queue_id}`;
+
+        let queueBadge = '';
+        if (p.queue_id !== undefined) {
+            const qColor = QUEUE_COLORS[p.queue_id] || '#fff';
+            queueBadge = `<span class="chip-queue-badge" style="background:${qColor}20; color:${qColor}; border: 1px solid ${qColor}40;">${QUEUE_NAMES[p.queue_id]}</span>`;
+        }
 
         chip.innerHTML = `
             <span class="chip-color" style="background:${p.color}; color:${p.color};"></span>
             <span>${label}</span>
+            ${queueBadge}
             <span class="chip-remove" data-idx="${i}">&times;</span>
         `;
         processChips.appendChild(chip);
@@ -272,6 +325,8 @@ btnSimulate.addEventListener('click', async () => {
 
     if (currentMode === 'battle') {
         await runBattle();
+    } else if (currentMode === 'advanced') {
+        await runAdvanced();
     } else {
         await runSingle();
     }
@@ -313,8 +368,49 @@ async function runSingle() {
     }
 }
 
-// Live Gantt Rendering
-function liveRenderGantt(timeline) {
+async function runAdvanced() {
+    btnSimulate.disabled = true;
+    btnSimulate.innerHTML = '<span class="btn-icon">⏳</span> RUNNING…';
+
+    const algo = $('advancedAlgoSelect').value;
+    const payload = {
+        algorithm: algo,
+        quantum: 2,
+        processes: processes.map(p => {
+            const obj = { pid: p.pid, at: p.at, bt: p.bt };
+            if (p.queue_id !== undefined) obj.queue_id = p.queue_id;
+            return obj;
+        }),
+    };
+
+    try {
+        const res = await fetch('/api/simulate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+
+        await liveRenderGantt(data.timeline, true);
+        renderResults(data.results, data, true);
+
+        if (data.queue_breakdown) {
+            renderQueueBreakdown(data.queue_breakdown);
+        }
+
+        showToast('MLQ SIMULATION COMPLETE! 🧠', 'success');
+    } catch (err) {
+        showToast(err.message || 'SIMULATION FAILED', 'error');
+    } finally {
+        btnSimulate.disabled = false;
+        btnSimulate.innerHTML = '<span class="btn-icon">🧠</span> SIMULATE';
+        cpuDot.className = 'cpu-dot idle-dot';
+        cpuStatus.textContent = 'IDLE';
+    }
+}
+
+function liveRenderGantt(timeline, isMLQ = false) {
     return new Promise((resolve) => {
         ganttSection.style.display = 'block';
         ganttContainer.innerHTML = '';
@@ -367,8 +463,12 @@ function liveRenderGantt(timeline) {
             bar.style.width = widthPct + '%';
 
             if (seg.pid !== 'Idle') {
-                bar.style.background = colorMap[seg.pid] || '#00ff64';
-                cpuStatus.textContent = seg.pid;
+                if (isMLQ && seg.queue_id) {
+                    bar.style.background = QUEUE_COLORS[seg.queue_id] || colorMap[seg.pid] || '#00ff64';
+                } else {
+                    bar.style.background = colorMap[seg.pid] || '#00ff64';
+                }
+                cpuStatus.textContent = seg.pid + (isMLQ && seg.queue_id ? ` [Q${seg.queue_id}]` : '');
                 playBlip(300 + segIndex * 40, 0.04);
             } else {
                 cpuStatus.textContent = 'IDLE';
@@ -377,7 +477,7 @@ function liveRenderGantt(timeline) {
             }
 
             bar.textContent = seg.pid;
-            bar.title = `${seg.pid}: ${seg.start} → ${seg.end}`;
+            bar.title = `${seg.pid}: ${seg.start} → ${seg.end}` + (isMLQ && seg.queue_id ? ` [Q${seg.queue_id} ${QUEUE_NAMES[seg.queue_id]}]` : '');
             ganttContainer.appendChild(bar);
 
             segIndex++;
@@ -406,17 +506,38 @@ function renderTimestamps(timeline, totalTime) {
     });
 }
 
-function renderResults(results, data) {
+function renderResults(results, data, isMLQ = false) {
     resultsSection.style.display = 'block';
     resultsBody.innerHTML = '';
 
     const colorMap = {};
     processes.forEach(p => { colorMap[p.pid] = p.color; });
 
+    const thead = resultsSection.querySelector('thead tr');
+    if (isMLQ) {
+        if (!thead.querySelector('.th-queue')) {
+            const th = document.createElement('th');
+            th.textContent = 'QUEUE';
+            th.className = 'th-queue';
+            thead.insertBefore(th, thead.children[1]);
+        }
+    } else {
+        const existingTh = thead.querySelector('.th-queue');
+        if (existingTh) existingTh.remove();
+    }
+
     results.forEach((r, i) => {
         const tr = document.createElement('tr');
         tr.style.animationDelay = `${i * 0.07}s`;
         const color = colorMap[r.pid] || '#00ff64';
+
+        let queueCell = '';
+        if (isMLQ) {
+            const qId = r.queue_id || 3;
+            const qColor = QUEUE_COLORS[qId] || '#fff';
+            queueCell = `<td><span class="queue-tag" style="background:${qColor}20; color:${qColor}; border:1px solid ${qColor}40;">Q${qId} ${QUEUE_NAMES[qId]}</span></td>`;
+        }
+
         tr.innerHTML = `
             <td>
                 <div class="pid-cell">
@@ -424,6 +545,7 @@ function renderResults(results, data) {
                     ${r.pid}
                 </div>
             </td>
+            ${queueCell}
             <td>${r.at}</td>
             <td>${r.bt}</td>
             <td>${r.ct}</td>
@@ -440,6 +562,53 @@ function renderResults(results, data) {
     $('metricCPU').textContent = data.cpu_utilization + '%';
 
     resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderQueueBreakdown(breakdown) {
+    let existing = $('queueBreakdownSection');
+    if (existing) existing.remove();
+
+    const section = document.createElement('section');
+    section.className = 'panel panel-queue-breakdown pixel-card';
+    section.id = 'queueBreakdownSection';
+    section.style.maxWidth = '1200px';
+    section.style.margin = '0 auto 20px';
+    section.style.padding = '24px';
+    section.style.position = 'relative';
+    section.style.zIndex = '1';
+
+    let html = '<h2 class="panel-title">📊 Queue Breakdown</h2>';
+    html += '<div class="queue-breakdown-grid">';
+
+    for (const [qId, info] of Object.entries(breakdown)) {
+        const algoLabel = info.quantum ? `${info.algorithm} (q=${info.quantum})` : info.algorithm;
+        html += `
+            <div class="queue-breakdown-card pixel-card" style="border-color: ${info.color}40;">
+                <div class="queue-breakdown-header" style="color: ${info.color}; text-shadow: 0 0 8px ${info.color}40;">
+                    <span class="queue-dot" style="background: ${info.color};"></span>
+                    Q${qId} — ${info.name}
+                </div>
+                <div class="queue-breakdown-details">
+                    <div class="queue-breakdown-row">
+                        <span class="queue-breakdown-label">Algorithm</span>
+                        <span class="queue-breakdown-value">${algoLabel}</span>
+                    </div>
+                    <div class="queue-breakdown-row">
+                        <span class="queue-breakdown-label">Processes</span>
+                        <span class="queue-breakdown-value">${info.process_count}</span>
+                    </div>
+                    <div class="queue-breakdown-row">
+                        <span class="queue-breakdown-label">CPU Time</span>
+                        <span class="queue-breakdown-value">${info.cpu_time} units</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    html += '</div>';
+    section.innerHTML = html;
+    resultsSection.after(section);
 }
 
 

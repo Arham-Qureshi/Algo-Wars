@@ -165,7 +165,7 @@ body::before {
     justify-content: center;
     gap: 0;
     margin: 0 auto 20px;
-    max-width: 500px;
+    max-width: 700px;
     padding: 0 24px;
     position: relative;
     z-index: 2;
@@ -190,9 +190,13 @@ body::before {
     border-right: none;
 }
 
+.mode-btn:nth-child(2) {
+    border-radius: 0;
+    border-right: none;
+}
+
 .mode-btn:last-child {
     border-radius: 0 var(--radius) var(--radius) 0;
-    border-left: none;
 }
 
 .mode-btn.active {
@@ -1205,4 +1209,138 @@ tbody tr:nth-child(even) {
     color: rgba(90, 138, 90, 0.5);
     margin-top: 6px;
     letter-spacing: 1px;
+}
+
+.mlq-queue-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 14px;
+    padding: 12px 14px;
+    border: 2px solid rgba(0, 255, 100, 0.1);
+    border-radius: var(--radius-sm);
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.queue-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--text);
+}
+
+.queue-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+    box-shadow: 0 0 6px currentColor;
+}
+
+.queue-type-select {
+    width: 100%;
+    padding: 8px 10px;
+    background: rgba(0, 0, 0, 0.6);
+    color: var(--neon-green);
+    border: 2px solid rgba(0, 255, 100, 0.2);
+    border-radius: var(--radius-sm);
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition);
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2300ff64' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px;
+}
+
+.queue-type-select:focus {
+    border-color: var(--neon-green);
+    box-shadow: 0 0 8px rgba(0, 255, 100, 0.2);
+}
+
+.queue-type-select option {
+    background: #0e0e12;
+    color: var(--neon-green);
+}
+
+.queue-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 2px;
+    font-family: var(--font);
+    font-size: 0.4rem;
+    letter-spacing: 0.5px;
+    font-weight: 400;
+    white-space: nowrap;
+}
+
+.chip-queue-badge {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 2px;
+    font-family: var(--font);
+    font-size: 0.35rem;
+    letter-spacing: 0.5px;
+    margin-left: 4px;
+}
+
+.queue-breakdown-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.queue-breakdown-card {
+    padding: 16px;
+    animation: chipIn 0.4s ease-out both;
+}
+
+.queue-breakdown-header {
+    font-family: var(--font);
+    font-size: 0.5rem;
+    font-weight: 400;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.queue-breakdown-details {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.queue-breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(0, 255, 100, 0.06);
+    font-family: var(--mono);
+    font-size: 0.75rem;
+}
+
+.queue-breakdown-label {
+    color: var(--text-dim);
+    font-size: 0.7rem;
+}
+
+.queue-breakdown-value {
+    color: var(--text);
+    font-weight: 700;
+}
+
+@media (max-width: 860px) {
+    .queue-breakdown-grid {
+        grid-template-columns: 1fr;
+    }
 }

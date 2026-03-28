@@ -144,6 +144,7 @@
         }
     }
 
+    // Connection lines
     function drawConnections(syms) {
         const LINK_DIST = 90;
         for (let i = 0; i < syms.length; i++) {
