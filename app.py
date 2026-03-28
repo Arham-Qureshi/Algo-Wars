@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify, Response
 from whitenoise import WhiteNoise
 import scheduler
+import advanced_algo
 
 app = Flask(__name__)
 # whitenoise only load the static file on deployment!
@@ -49,10 +50,15 @@ def simulate():
         }
         if 'priority' in p:
             proc['priority'] = int(p['priority'])
+        if 'queue_id' in p:
+            proc['queue_id'] = int(p['queue_id'])
         processes.append(proc)
 
     try:
-        result = scheduler.run(algo, processes, quantum)
+        if algo in advanced_algo.ALGORITHMS:
+            result = advanced_algo.run(algo, processes, quantum)
+        else:
+            result = scheduler.run(algo, processes, quantum)
         return jsonify(result)
     except Exception as e:
         return jsonify({'error': str(e)}), 400
@@ -75,11 +81,18 @@ def compare():
         }
         if 'priority' in p:
             proc['priority'] = int(p['priority'])
+        if 'queue_id' in p:
+            proc['queue_id'] = int(p['queue_id'])
         processes.append(proc)
 
+    def _run_algo(algo_key):
+        if algo_key in advanced_algo.ALGORITHMS:
+            return advanced_algo.run(algo_key, processes, quantum)
+        return scheduler.run(algo_key, processes, quantum)
+
     try:
-        result1 = scheduler.run(algo1, processes, quantum)
-        result2 = scheduler.run(algo2, processes, quantum)
+        result1 = _run_algo(algo1)
+        result2 = _run_algo(algo2)
         return jsonify({
             'result1': result1,
             'result2': result2,
