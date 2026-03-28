@@ -80,6 +80,7 @@
     <div class="mode-bar">
         <button class="mode-btn active" id="modeSingle" data-mode="single">⚔ Single Play</button>
         <button class="mode-btn" id="modeBattle" data-mode="battle">🆚 Algorithm Battle</button>
+        <button class="mode-btn" id="modeAdvanced" data-mode="advanced">🧠 Advanced</button>
     </div>
 
     <main class="main-grid">
@@ -120,6 +121,28 @@
                         <option value="priority_preemptive">Priority (P)</option>
                         <option value="round_robin">Round Robin</option>
                     </select>
+                </div>
+            </div>
+
+            <div id="advancedAlgoWrap" class="hidden">
+                <div class="select-wrap">
+                    <select id="advancedAlgoSelect">
+                        <option value="mlq">MLQ — Multilevel Queue</option>
+                    </select>
+                </div>
+                <div class="mlq-queue-legend">
+                    <div class="queue-legend-item">
+                        <span class="queue-dot" style="background: #ff2d95;"></span>
+                        <span>Q1 System — RR (q=2)</span>
+                    </div>
+                    <div class="queue-legend-item">
+                        <span class="queue-dot" style="background: #00e5ff;"></span>
+                        <span>Q2 Interactive — RR (q=4)</span>
+                    </div>
+                    <div class="queue-legend-item">
+                        <span class="queue-dot" style="background: #ffe600;"></span>
+                        <span>Q3 Batch — FCFS</span>
+                    </div>
                 </div>
             </div>
 
@@ -166,6 +189,14 @@
                 <div class="input-group hidden" id="priorityGroup">
                     <label>Priority</label>
                     <input type="number" id="inputPriority" min="0" value="0" placeholder="0">
+                </div>
+                <div class="input-group hidden" id="queueTypeGroup">
+                    <label>Process Type</label>
+                    <select id="inputQueueType" class="queue-type-select">
+                        <option value="1">🔴 System</option>
+                        <option value="2">🔵 Interactive</option>
+                        <option value="3">🟡 Batch</option>
+                    </select>
                 </div>
                 <button class="btn btn-add" id="btnAdd">+ ADD</button>
             </div>
