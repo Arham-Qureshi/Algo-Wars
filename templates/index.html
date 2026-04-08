@@ -228,6 +228,82 @@
         <div class="gantt-timestamps" id="ganttTimestamps"></div>
     </section>
 
+    <section class="panel pixel-card mlq-anim-section" id="mlqAnimSection" style="display:none;">
+        <div class="panel-header-row">
+            <h2 class="panel-title">🧠 MLQ Process Scheduling Animation</h2>
+        </div>
+        <div class="mlq-anim-controls">
+            <label>SPEED</label>
+            <input type="range" class="speed-slider" id="mlqSpeedSlider" min="1" max="10" value="4">
+            <span class="speed-label" id="mlqSpeedLabel">4x</span>
+            <div class="cpu-indicator">
+                <span class="cpu-dot" id="mlqCpuDot"></span>
+                <span id="mlqCpuStatus">READY</span>
+            </div>
+        </div>
+        <div class="mlq-anim-stage" id="mlqStage">
+            <div class="mlq-anim-left">
+                <div class="mlq-arrival-pool" id="mlqArrivalPool">
+                    <div class="mlq-pool-title">📥 ARRIVAL POOL</div>
+                    <div class="mlq-pool-processes" id="mlqPoolProcesses"></div>
+                </div>
+            </div>
+            <div class="mlq-anim-center">
+                <div class="mlq-priority-arrow">
+                    <span class="mlq-arrow-label-top">HIGH PRIORITY</span>
+                    <div class="mlq-arrow-shaft"></div>
+                    <span class="mlq-arrow-label-bot">LOW PRIORITY</span>
+                </div>
+                <div class="mlq-queues-stack">
+                    <div class="mlq-queue-row" data-queue="1" id="mlqQueueRow1">
+                        <div class="mlq-queue-header" style="color: #ff2d95; border-color: #ff2d95;">
+                            <span class="mlq-q-badge" style="background:#ff2d95;">Q1</span>
+                            <span>System</span>
+                            <span class="mlq-q-algo">RR (q=2)</span>
+                        </div>
+                        <div class="mlq-queue-slots" id="mlqSlots1"></div>
+                    </div>
+                    <div class="mlq-queue-row" data-queue="2" id="mlqQueueRow2">
+                        <div class="mlq-queue-header" style="color: #00e5ff; border-color: #00e5ff;">
+                            <span class="mlq-q-badge" style="background:#00e5ff;">Q2</span>
+                            <span>Interactive</span>
+                            <span class="mlq-q-algo">RR (q=4)</span>
+                        </div>
+                        <div class="mlq-queue-slots" id="mlqSlots2"></div>
+                    </div>
+                    <div class="mlq-queue-row" data-queue="3" id="mlqQueueRow3">
+                        <div class="mlq-queue-header" style="color: #ffe600; border-color: #ffe600;">
+                            <span class="mlq-q-badge" style="background:#ffe600;">Q3</span>
+                            <span>Batch</span>
+                            <span class="mlq-q-algo">FCFS</span>
+                        </div>
+                        <div class="mlq-queue-slots" id="mlqSlots3"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="mlq-anim-right">
+                <div class="mlq-cpu-unit" id="mlqCpuUnit">
+                    <div class="mlq-cpu-label">⚙ CPU</div>
+                    <div class="mlq-cpu-core" id="mlqCpuCore">
+                        <span class="mlq-cpu-idle-text">IDLE</span>
+                    </div>
+                    <div class="mlq-cpu-timer" id="mlqCpuTimer"></div>
+                </div>
+                <div class="mlq-completed-area" id="mlqCompletedArea">
+                    <div class="mlq-completed-title">✅ COMPLETED</div>
+                    <div class="mlq-completed-list" id="mlqCompletedList"></div>
+                </div>
+            </div>
+        </div>
+        <div class="mlq-timeline-bar" id="mlqTimelineBar">
+            <div class="mlq-time-label">TIME: <span id="mlqTimeValue">0</span></div>
+            <div class="mlq-time-track">
+                <div class="mlq-time-fill" id="mlqTimeFill"></div>
+            </div>
+            <div class="mlq-event-log" id="mlqEventLog"></div>
+        </div>
+    </section>
+
     <section class="panel panel-results pixel-card" id="resultsSection" style="display:none;">
         <h2 class="panel-title">🏆 High Score</h2>
         <div class="results-grid">
