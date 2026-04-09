@@ -62,7 +62,10 @@
     }
     </script>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/single.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/battle.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/advanced.css') }}">
 </head>
 
 <body>
@@ -393,8 +396,11 @@
         <p class="footer-sub">FCFS · SJF · SRTF · Priority · Round Robin — Visualize & Compare Scheduling Algorithms</p>
     </footer>
 
-    <script src="{{ url_for('static', filename='js/particles.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/particles.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/core.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/single.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/battle.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/advanced.js') }}"></script>
 
 
 </body>
