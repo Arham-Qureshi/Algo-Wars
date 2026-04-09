@@ -21,6 +21,7 @@ Algo-Wars is a professional browser-based interactive CPU scheduling simulator b
 - [Usage](#usage)
   - [Single Mode](#single-mode)
   - [Battle Mode](#battle-mode)
+  - [Advanced Mode](#advanced-mode)
   - [Process Input Parameters](#process-input-parameters)
   - [Simulation Speed Control](#simulation-speed-control)
   - [Interpreting Results](#interpreting-results)
@@ -76,6 +77,7 @@ The simulator supports the following classical CPU scheduling algorithms. Config
 | **Priority Scheduling** | Non-Preemptive | Arrival Time, Burst Time, Priority |
 | **Priority Scheduling** | Preemptive | Arrival Time, Burst Time, Priority |
 | **Round Robin (RR)** | Preemptive | Arrival Time, Burst Time, Time Quantum |
+| **Multilevel Queue (MLQ)** | Advanced | Arrival Time, Burst Time, Queue Type |
 
 ---
 
@@ -96,16 +98,23 @@ The simulator supports the following classical CPU scheduling algorithms. Config
 
 ```
 OS/
-├── app.py              # Flask application entry point. Defines /api/simulate and /api/compare routes.
-├── scheduler.py        # Core scheduling engine. Contains all algorithm implementations and the dispatcher.
+├── app.py              # Flask application entry point. Defines API routes.
+├── scheduler.py        # Core scheduling engine. Contains classical algorithm implementations.
+├── advanced_algo.py    # Advanced scheduling engine. Contains MLQ implementation.
 ├── templates/
 │   └── index.html      # Single-page HTML template rendered by Flask.
 ├── static/
 │   ├── css/
-│   │   └── styles.css  # Application stylesheet (retro arcade design system).
+│   │   ├── advanced.css # Styles for Advanced mode and MLQ visualization.
+│   │   ├── battle.css   # Styles for Battle mode.
+│   │   ├── core.css     # Shared variables, resets, and common UI elements.
+│   │   └── single.css   # Styles for Single mode (Gantt chart, etc.).
 │   └── js/
-│       ├── main.js     # Frontend application logic: UI, live simulation, battle mode, API calls.
-│       └── particles.js # Background particle animation for the retro visual effect.
+│       ├── advanced.js  # Advanced mode logic and MLQ animation rendering.
+│       ├── battle.js    # Battle mode execution and side-by-side comparisons.
+│       ├── core.js      # Global state, shared UI functions, audio, and utility scripts.
+│       ├── particles.js # Background particle animation for the retro visual effect.
+│       └── single.js    # Single mode simulation and Gantt chart mechanics.
 ├── LICENSE             # MIT License.
 └── README.md           # This file.
 ```
@@ -198,6 +207,17 @@ Battle Mode submits the same process set to two different algorithms simultaneou
 5. The battle results panel will appear with two Gantt charts, two stats panels, and a winner declaration based on aggregate performance scoring.
 
 > **Note:** If the same algorithm is selected for both slots in Battle Mode, the simulation will reject the input with an error notification.
+
+### Advanced Mode
+
+Advanced Mode features complex OS-level scheduling algorithms, showcasing detailed simulation animations. Currently, this mode supports **Multilevel Queue (MLQ)** scheduling.
+
+1. Click the **Advanced** button in the mode bar (labeled with a brain icon).
+2. Select **MLQ — Multilevel Queue** from the algorithm dropdown.
+3. Add processes. Notice that in Advanced Mode, you are able to assign each process to a specific queue (**System**, **Interactive**, or **Batch**).
+4. Click **SIMULATE** to begin.
+5. The detailed Multilevel Queue animation panel will initialize, illustrating process arrivals into distinct queues, context switching, CPU execution, and completions.
+6. Once the animation is complete (or you skip to the end), a queue breakdown summary is provided alongside the final performance metrics table.
 
 ### Process Input Parameters
 
