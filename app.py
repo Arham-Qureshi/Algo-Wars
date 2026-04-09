@@ -7,7 +7,7 @@ app = Flask(__name__)
 # whitenoise only load the static file on deployment!
 app.wsgi_app = WhiteNoise(app.wsgi_app, root='static/', prefix='static/')
 
-SITE_URL = 'https://algo-wars.onrender.com'
+SITE_URL = 'https://algo-wars.vercel.app'
 
 
 @app.route('/robots.txt')
