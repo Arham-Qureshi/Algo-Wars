@@ -515,8 +515,7 @@ function renderMLQAnimation(timeline, data, procs) {
                     const qId = proc.queue_id || 3;
                     const poolChip = $('mlq-pool-' + pid);
                     if (poolChip) {
-                        poolChip.classList.add('mlq-pool-chip-exit');
-                        setTimeout(() => { if (poolChip.parentNode) poolChip.remove(); }, 400);
+                        poolChip.classList.add('mlq-pool-chip-arrived');
                     }
 
                     addToQueueVisual(pid, qId, colorMap[pid]);
@@ -592,13 +591,16 @@ function renderMLQAnimation(timeline, data, procs) {
                                       <span class="mlq-completed-badge" style="background:${qColor}20; color:${qColor};">Q${qId}</span>`;
                     completedList.appendChild(chip);
 
-                    addEventLogEntry(eventLog, `✅ ${pid} completed at T=${evt.time}`, '#00ff64');
+                    addToQueueVisual(pid, qId, colorMap[pid], true);
+
+                    const ctTime = evt.completionTimes ? evt.completionTimes[pid] : evt.time;
+                    addEventLogEntry(eventLog, `✅ ${pid} completed at T=${ctTime}`, '#00ff64');
                     playBlip(880, 0.06);
                 });
             }
             if (evt.requeued && evt.requeued.length) {
                 evt.requeued.forEach(item => {
-                    addToQueueVisual(item.pid, item.qId, colorMap[item.pid]);
+                    addToQueueVisual(item.pid, item.qId, colorMap[item.pid], false);
                     addEventLogEntry(eventLog, `↩ ${item.pid} back to Q${item.qId}`, QUEUE_COLORS[item.qId]);
                 });
             }
@@ -608,14 +610,18 @@ function renderMLQAnimation(timeline, data, procs) {
     });
 }
 
-function addToQueueVisual(pid, qId, color) {
+function addToQueueVisual(pid, qId, color, isCompleted = false) {
     const slots = $('mlqSlots' + qId);
     if (!slots) return;
     // Don't add duplicate
     if (slots.querySelector(`[data-pid="${pid}"]`)) return;
     const qColor = QUEUE_COLORS[qId] || '#fff';
     const chip = document.createElement('div');
-    chip.className = 'mlq-queue-chip';
+    let classes = 'mlq-queue-chip';
+    if (isCompleted) {
+        classes += ' mlq-queue-chip-completed';
+    }
+    chip.className = classes;
     chip.setAttribute('data-pid', pid);
     chip.style.background = qColor + '18';
     chip.style.borderColor = qColor + '50';
@@ -629,6 +635,7 @@ function removeFromQueueVisual(pid, qId) {
     if (!slots) return;
     const chip = slots.querySelector(`[data-pid="${pid}"]`);
     if (chip) {
+        chip.removeAttribute('data-pid');
         chip.classList.add('mlq-queue-chip-exit');
         setTimeout(() => { if (chip.parentNode) chip.remove(); }, 300);
     }
@@ -690,6 +697,7 @@ function buildMLQEvents(timeline, procs, results) {
             arrivals: [],
             completed: [],
             requeued: [],
+            completionTimes: {}
         };
 
         procs.forEach(p => {
@@ -709,6 +717,7 @@ function buildMLQEvents(timeline, procs, results) {
 
         if (seg.pid !== 'Idle' && completionTimes[seg.pid] === seg.end) {
             evt.completed.push(seg.pid);
+            evt.completionTimes[seg.pid] = seg.end;
             completedPids.add(seg.pid);
             activePids.delete(seg.pid);
         }

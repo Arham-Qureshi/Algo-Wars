@@ -1446,6 +1446,12 @@ tbody tr:nth-child(even) {
     transition: all 0.4s ease;
 }
 
+.mlq-pool-chip-arrived {
+    opacity: 1;
+    pointer-events: none;
+    border-style: dashed;
+}
+
 .mlq-pool-dot {
     width: 8px;
     height: 8px;
@@ -1473,7 +1479,7 @@ tbody tr:nth-child(even) {
 .mlq-arrow-label-top,
 .mlq-arrow-label-bot {
     font-family: var(--font);
-    font-size: 0.3rem;
+    font-size: 0.6rem;
     color: var(--text-dim);
     letter-spacing: 0.5px;
     text-transform: uppercase;
@@ -1632,6 +1638,12 @@ tbody tr:nth-child(even) {
     opacity: 0;
     transform: translateX(20px) scale(0.7);
     transition: all 0.3s ease;
+}
+
+.mlq-queue-chip-completed {
+    opacity: 0.3;
+    pointer-events: none;
+    border-style: dashed;
 }
 
 @keyframes mlqChipEnter {
@@ -1896,14 +1908,6 @@ tbody tr:nth-child(even) {
     transition: opacity 0.3s ease;
 }
 
-.mlq-log-entry:nth-child(n+6) {
-    opacity: 0.5;
-}
-
-.mlq-log-entry:nth-child(n+10) {
-    opacity: 0.25;
-}
-
 @keyframes logSlide {
     from {
         opacity: 0;
@@ -1980,4 +1984,5 @@ tbody tr:nth-child(even) {
     .mlq-queue-slots {
         min-height: 24px;
     }
+
 }
